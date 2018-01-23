@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="." destdir="doc" doctitle="QDemo &amp;trade; by Elven Rings" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.elvenrings.qdemo.view.swing,com.elvenrings.qdemo.exceptions,com.elvenrings.qdemo.view.events.swing,com.elvenrings.qdemo.view.swing.markers,com.elvenrings.qdemo.view,com.elvenrings.qdemo.view.swing.listeners,com.elvenrings.qdemo.interfaces,com.elvenrings.qdemo.view.events.console,com.elvenrings.qdemo.model,com.elvenrings.qdemo.view.console,com.elvenrings.qdemo.view.events,com.elvenrings.qdemo.test" source="1.8" sourcepath="src" splitindex="true" use="true" version="true">
+            <link href="file:/Users/iliasusalifu/Documents/workspace_new/QuestionDemo/doc/"/>
+            <link href="https://docs.oracle.com/javase/8/docs/api/"/>
+            <link href="http://docs.oracle.com/javase/8/javafx/api/"/>
+        </javadoc>
+    </target>
+</project>
