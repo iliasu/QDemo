@@ -1,13 +1,13 @@
 package com.elvenrings.qdemo.view.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JRadioButton;
@@ -33,6 +33,7 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 {
 	private Integer chosenInput = -1;
 	private JRadioButton[] radioButtons;
+	QPanel mainPanel = new QPanel();
 
 	/**
 	 * Single Parameter constructor accepts a <code>SingleChoiceQuestion</code> as
@@ -75,30 +76,26 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 	@Override
 	public QPanel render()
 	{
-		QPanel panel = super.render();
-		panel.setOpaque(true);
-		panel.setBackground(Color.WHITE);
-		panel.setForeground(Color.BLACK);
-		List<String> optionList = question.getChoice().getOptionList();
-		int optionCount = optionList.size();
-		ButtonGroup group = new ButtonGroup();
-
-		radioButtons = new JRadioButton[optionCount];
-
-		for (int i = 0; i < optionCount; i++)
-		{
-			radioButtons[i] = new JRadioButton();
-			radioButtons[i].setText(optionList.get(i));
-			group.add(radioButtons[i]);
-		}
-
-		layoutOptions(panel);
+		QPanel questionPanel = super.render();
+		questionPanel.setBackground(Color.WHITE);
+		questionPanel.setBackground(Color.BLACK);
+		mainPanel.setLayout(new BorderLayout());
+		
+		mainPanel.setOpaque(true);
+		mainPanel.setBackground(Color.WHITE);
+		mainPanel.setForeground(Color.BLACK);
+		
+		mainPanel.add(questionPanel,BorderLayout.CENTER);
+		
+		Box box = layoutOptions();
+		mainPanel.add(box,BorderLayout.SOUTH);
 		Border outsideBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		Border insideBorder = BorderFactory.createEtchedBorder();
 
 		Border border = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
-		panel.setBorder(border);
-		return panel;
+
+		mainPanel.setBorder(border);
+		return mainPanel;
 	}
 
 	/**
@@ -124,21 +121,37 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 
 	}
 
-	private void layoutOptions(QPanel panel)
+	private Box layoutOptions()
 	{
-		GridBagConstraints gc = panel.getConstraints();
-		gc.gridx = 0;
-		gc.gridy = 1;
-		gc.anchor = GridBagConstraints.LINE_START;
-		gc.insets = new Insets(5, 5, 5, 5);
-		gc.fill = GridBagConstraints.NONE;
+		List<String> optionList = question.getChoice().getOptionList();
+		int optionCount = optionList.size();
+		radioButtons = new JRadioButton[optionCount];
+		ButtonGroup group = new ButtonGroup();
+	
+		Box box = Box.createVerticalBox();
+		box.setOpaque(true);
+		box.setBackground(new Color(234,234,234));
 
-		for (int i = 0; i < radioButtons.length; i++)
+		for (int i = 0; i < optionCount; i++)
 		{
-			gc.gridy++;
-			panel.add(radioButtons[i], gc);
+			radioButtons[i] = new JRadioButton();
+			radioButtons[i].setText(optionList.get(i));
+			group.add(radioButtons[i]);
+			Box.createVerticalGlue();
+			box.add(radioButtons[i]);
 		}
-		gc.gridy++;
-		panel.add(submitButton, gc);
+		Box.createVerticalStrut(10);
+		box.add(submitButton);
+		return box;
+	}
+	
+	public SingleChoiceQuestion getQuestion()
+	{
+		return (SingleChoiceQuestion) question;
+	}
+	
+	public JRadioButton[] getRadioButtons()
+	{
+		return radioButtons;
 	}
 }

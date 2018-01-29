@@ -18,6 +18,7 @@ public abstract class Question
 	protected Body body;
 	private Integer sequence1 = 0;
 	private Integer sequence2 = 0;
+	private Integer attempts = 0;
 	
 	protected Question()
 	{
@@ -59,6 +60,16 @@ public abstract class Question
 		addData(body, ++sequence2, data);
 	}
 
+	public Integer getAttempts()
+	{
+		return attempts;
+	}
+	
+	public void setAttempts(Integer attempts)
+	{
+		this.attempts = attempts;
+	}
+	
 	private void addText(Part fragment, Integer sequence, String text)
 	{
 		fragment.addText(sequence, text);

@@ -1,14 +1,14 @@
 package com.elvenrings.qdemo.view.swing;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
@@ -33,6 +33,7 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 {
 	private String[] input = null;
 	private JTextField textField = null;
+	QPanel mainPanel = new QPanel();
 
 	/**
 	 * Single Parameter constructor accepts a <code>FillBlankQuestion</code> as the
@@ -74,36 +75,41 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	@Override
 	public QPanel render()
 	{
-		QPanel panel = super.render();
-		panel.setOpaque(true);
-		panel.setBackground(Color.WHITE);
-		panel.setForeground(Color.BLACK);
-
-		textField = new JTextField(15);
-
-		layoutOptions(panel);
+		QPanel questionPanel = super.render();
+		questionPanel.setBackground(Color.WHITE);
+		questionPanel.setBackground(Color.BLACK);
+		mainPanel.setLayout(new BorderLayout());
+		
+		mainPanel.setOpaque(true);
+		mainPanel.setBackground(Color.WHITE);
+		mainPanel.setForeground(Color.BLACK);
+		
+		mainPanel.add(questionPanel,BorderLayout.CENTER);
+		
+		Box box = layoutOptions();
+		mainPanel.add(box,BorderLayout.SOUTH);
+		
+		
 		Border outsideBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		Border insideBorder = BorderFactory.createEtchedBorder();
 
 		Border border = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
-		panel.setBorder(border);
-		return panel;
+		
+		mainPanel.setBorder(border);
+		return mainPanel;
+		
 	}
 
-	private void layoutOptions(QPanel panel)
+	private Box layoutOptions()
 	{
-		GridBagConstraints gc = panel.getConstraints();
-		gc.gridx = 0;
-		gc.gridy = 1;
-		gc.anchor = GridBagConstraints.LINE_START;
-		gc.insets = new Insets(5, 5, 5, 5);
-		gc.fill = GridBagConstraints.NONE;
-
-		gc.gridy++;
-		panel.add(textField, gc);
-		gc.gridy++;
-		gc.weighty = 10;
-		panel.add(submitButton, gc);
+		Box box = Box.createVerticalBox();
+		box.setOpaque(true);
+		box.setBackground(new Color(234,234,234));
+		textField = new JTextField(10);
+		box.add(textField);
+		Box.createVerticalStrut(10);
+		box.add(submitButton);
+		return box;
 
 	}
 
@@ -135,6 +141,16 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		}
 
 		return strTokens;
+	}
+	
+	public FillBlankQuestion getQuestion()
+	{
+		return (FillBlankQuestion) question;
+	}
+	
+	public JTextField getTextField()
+	{
+		return this.textField;
 	}
 
 }

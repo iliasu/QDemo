@@ -22,6 +22,8 @@ public class QPanel extends JPanel
 	public QPanel()
 	{
 		super();
+		gc.gridx=0;
+		gc.gridy=0;
 	}
 	/** Returns a <code>GridBagConstraints</code> object.
 	 * 

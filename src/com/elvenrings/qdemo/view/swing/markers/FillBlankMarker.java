@@ -15,6 +15,12 @@ import com.elvenrings.qdemo.view.events.FillBlankEvent;
  */
 public class FillBlankMarker implements Marker
 {
+	
+
+	public FillBlankMarker()
+	{
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean isCorrect(Event event)
