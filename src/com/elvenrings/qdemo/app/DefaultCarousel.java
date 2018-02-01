@@ -56,23 +56,23 @@ public class DefaultCarousel extends JPanel
 
 		if (firstPanel != null)
 		{
-			this.add(Integer.toString(++count), firstPanel);
+			mainPanel.add(Integer.toString(++count), firstPanel);
 		}
 
 		createQuestionPanels();
 
 		if (lastPanel != null)
 		{
-			this.add(Integer.toString(++count), firstPanel);
+			mainPanel.add(Integer.toString(++count), lastPanel);
 		}
 
 		tracker = new Tracker();
 		tracker.init(1, count, 1);
 
-		NextButton nextButton = new NextButton("Next", mediator);
-		PrevButton prevButton = new PrevButton("Prev", mediator);
-		FirstButton firstButton = new FirstButton("First", mediator);
-		LastButton lastButton = new LastButton("Last", mediator);
+		NextButton nextButton = new NextButton(">", mediator);
+		PrevButton prevButton = new PrevButton("<", mediator);
+		FirstButton firstButton = new FirstButton("<<", mediator);
+		LastButton lastButton = new LastButton(">>", mediator);
 
 		Box box = Box.createHorizontalBox();
 		box.add(firstButton);
@@ -84,12 +84,13 @@ public class DefaultCarousel extends JPanel
 		box.add(lastButton);
 		buttonPanel.add(box);
 
-		mediator.registerNext(nextButton);
-		mediator.registerPrev(prevButton);
-		mediator.registerFirst(firstButton);
-		mediator.registerLast(lastButton);
+	//	mediator.registerNext(nextButton);
+	//	mediator.registerPrev(prevButton);
+	//	mediator.registerFirst(firstButton);
+	//	mediator.registerLast(lastButton);
 
 		this.revalidate();
+		mediator.init();
 
 	}
 
@@ -180,6 +181,31 @@ public class DefaultCarousel extends JPanel
 			this.lastButton = lastButton;
 		}
 
+		
+		public void init() throws TrackerException
+		{
+			if (tracker.hasNext())
+			{
+				nextButton.setEnabled(true);
+				lastButton.setEnabled(true);
+			} else
+			{
+				nextButton.setEnabled(false);
+				lastButton.setEnabled(false);
+			}
+
+			if (tracker.hasPrev())
+			{
+				prevButton.setEnabled(true);
+				firstButton.setEnabled(true);
+			} else
+			{
+				prevButton.setEnabled(false);
+				firstButton.setEnabled(false);
+			}
+
+		}
+		
 		void next() throws TrackerException
 		{
 			tracker.next();
@@ -263,6 +289,7 @@ public class DefaultCarousel extends JPanel
 		{
 			this.setText(label);
 			this.med = med;
+			this.med.registerNext(this);
 			this.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
@@ -290,6 +317,7 @@ public class DefaultCarousel extends JPanel
 		{
 			this.setText(label);
 			this.med = med;
+			this.med.registerPrev(this);
 			this.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
@@ -317,6 +345,7 @@ public class DefaultCarousel extends JPanel
 		{
 			this.setText(label);
 			this.med = med;
+			this.med.registerFirst(this);
 			this.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{
@@ -344,6 +373,7 @@ public class DefaultCarousel extends JPanel
 		{
 			this.setText(label);
 			this.med = med;
+			this.med.registerLast(this);
 			this.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)
 				{

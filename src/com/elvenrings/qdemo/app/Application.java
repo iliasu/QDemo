@@ -28,12 +28,10 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 
-import com.elvenrings.qdemo.utils.Mediator;
-
 public class Application extends JFrame
 {
 	
-	private Mediator mediator = new Mediator();
+	//private Mediator mediator = new Mediator();
 	//private QuestionMap question = new QuestionMap();
 	private XMLFileLoader xmlFileLoader = new XMLFileLoader();
 	private JTabbedPane tabbedPane;
@@ -47,7 +45,7 @@ public class Application extends JFrame
 	private JTextArea updateArea;
 	
 	private static final long serialVersionUID = 1L;
-	private ApplicationContext context = ApplicationContext.getInstance();
+	private static ApplicationContext context = ApplicationContext.getInstance();
 	public Application()
 	{
 		super("QDemo");
@@ -157,7 +155,7 @@ public class Application extends JFrame
 
 	public void layoutMenus()
 	{
-		ComboPopulator populator = new ComboPopulator();
+		ComboPopulator populator = new ComboPopulator(context);
 		xmlFileLoader.addQuestionFileLoadListener(populator);
 		
 		JMenuBar menuBar = new JMenuBar();
