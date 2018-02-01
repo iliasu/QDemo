@@ -107,7 +107,7 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		box.setBackground(new Color(234,234,234));
 		textField = new JTextField(10);
 		box.add(textField);
-		Box.createVerticalStrut(10);
+		box.add(Box.createVerticalStrut(5));
 		box.add(submitButton);
 		return box;
 

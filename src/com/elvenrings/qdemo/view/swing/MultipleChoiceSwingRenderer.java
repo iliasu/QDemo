@@ -138,10 +138,11 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 		{
 			checkBoxes[i] = new JCheckBox();
 			checkBoxes[i].setText(optionList.get(i));
-			Box.createVerticalGlue();
+			box.add(Box.createVerticalGlue());
 			box.add(checkBoxes[i]);
 		}
-		Box.createVerticalStrut(10);
+		
+		box.add(Box.createVerticalStrut(5));
 		box.add(submitButton);
 		return box;
 	}

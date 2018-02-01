@@ -23,7 +23,7 @@ import com.elvenrings.qdemo.model.SingleChoiceQuestion;
 public class ReadQuestions
 {
 	public List<Question> questions ;
-	public ReadQuestions(String XMLFile) throws Exception
+	public ReadQuestions(String XMLFile) throws SAXException, IOException
 	{
 		XMLReader reader = XMLReaderFactory.createXMLReader();
 		QdemoHandler handler = new QdemoHandler();

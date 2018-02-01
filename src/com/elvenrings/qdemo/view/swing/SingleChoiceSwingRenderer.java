@@ -137,10 +137,10 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 			radioButtons[i] = new JRadioButton();
 			radioButtons[i].setText(optionList.get(i));
 			group.add(radioButtons[i]);
-			Box.createVerticalGlue();
+			box.add(Box.createVerticalGlue());
 			box.add(radioButtons[i]);
 		}
-		Box.createVerticalStrut(10);
+		box.add(Box.createVerticalStrut(5));
 		box.add(submitButton);
 		return box;
 	}
