@@ -57,12 +57,12 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	{
 		this.carousel = carousel;
 		this.groupSubmit = groupSubmit;
+		
 		setupResultLabel();
 		setupAttemptLabel();
 		setupGroupSubmitButton(groupSubmit);
-
+		
 		this.setLayout(new BorderLayout());
-
 		this.add(resultLabel, BorderLayout.NORTH);
 		this.add(attemptLabel, BorderLayout.CENTER);
 		this.add(groupSubmitButton, BorderLayout.SOUTH);

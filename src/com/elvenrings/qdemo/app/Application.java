@@ -54,6 +54,7 @@ public class Application extends JFrame
 	private JRadioButtonMenuItem groupSubmit;
 	private AboutDialog aboutDialog;
 	
+	
 	private static final long serialVersionUID = 1L;
 	private static ApplicationContext context = ApplicationContext.getInstance();
 	public Application()
@@ -95,6 +96,7 @@ public class Application extends JFrame
 		mainWestPanel.setPreferredSize(new Dimension(200,300));
 		mainWestPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		mainWestPanel.setBackground(new Color(206, 217, 228));
+		//mainWestPanel.setBackground(Color.RED);
 		
 		mainSouthPanel = new JPanel();
 		mainSouthPanel.setLayout(new BorderLayout());
@@ -211,12 +213,14 @@ public class Application extends JFrame
 		
 		JMenu optionsItem = new JMenu("Options") ;
 		
+		JMenu screenMenu = new JMenu("Screens");
 		welcomeScreen = new JCheckBoxMenuItem("Welcome Screen");
 		welcomeScreen.setSelected(false);
 		endScreen = new JCheckBoxMenuItem("End Screen");
 		endScreen.setSelected(false);
 		
 		ButtonGroup submitGroup = new ButtonGroup();
+		JMenu submitMode = new JMenu("Submit Mode");
 		singleSubmit = new JRadioButtonMenuItem("Single Submit");
 		groupSubmit = new JRadioButtonMenuItem("Group Submit");
 		submitGroup.add(singleSubmit);
@@ -249,11 +253,13 @@ public class Application extends JFrame
 		fileMenu.add(exitItem);
 			
 		loadMenu.add(optionsItem);
-		optionsItem.add(welcomeScreen);
-		optionsItem.add(endScreen);
+		optionsItem.add(screenMenu);
+		screenMenu.add(welcomeScreen);
+		screenMenu.add(endScreen);
 		optionsItem.addSeparator();
-		optionsItem.add(singleSubmit);
-		optionsItem.add(groupSubmit);
+		submitMode.add(singleSubmit);
+		submitMode.add(groupSubmit);
+		optionsItem.add(submitMode);
 		optionsItem.addSeparator();
 		optionsItem.add(timeAttack);
 		
