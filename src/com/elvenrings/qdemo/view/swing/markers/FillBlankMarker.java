@@ -29,7 +29,7 @@ public class FillBlankMarker implements Marker
 		FillBlank choice = (FillBlank) e.getChoice();
 
 		String[] input = e.getInput();
-
+		System.out.println(input[0]);
 		return choice.matches(input);
 	}
 

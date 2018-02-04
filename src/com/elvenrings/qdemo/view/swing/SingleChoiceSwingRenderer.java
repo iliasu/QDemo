@@ -2,6 +2,7 @@ package com.elvenrings.qdemo.view.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -77,7 +78,7 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 	public QPanel render()
 	{
 		QPanel questionPanel = super.render();
-		questionPanel.setBackground(Color.WHITE);
+		//questionPanel.setBackground(Color.WHITE);
 		questionPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
 		
@@ -138,10 +139,14 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 			radioButtons[i].setText(optionList.get(i));
 			group.add(radioButtons[i]);
 			box.add(Box.createVerticalGlue());
+			radioButtons[i].setAlignmentX(Component.LEFT_ALIGNMENT);
 			box.add(radioButtons[i]);
 		}
 		box.add(Box.createVerticalStrut(5));
+		submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(submitButton);
+		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		box.add(messageLabel);
 		return box;
 	}
 	

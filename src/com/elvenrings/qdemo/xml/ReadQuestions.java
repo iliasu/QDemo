@@ -23,6 +23,7 @@ import com.elvenrings.qdemo.model.SingleChoiceQuestion;
 public class ReadQuestions
 {
 	public List<Question> questions ;
+	public String questionSetName;
 	public ReadQuestions(String XMLFile) throws SAXException, IOException
 	{
 		XMLReader reader = XMLReaderFactory.createXMLReader();
@@ -31,6 +32,7 @@ public class ReadQuestions
 		InputSource source = new InputSource(XMLFile);
 		reader.parse(source);
 		questions = handler.getQuestions();
+		questionSetName = handler.getQuestionSetName();
 	}
 
 	public static void main(String[] args) throws SAXException, IOException
@@ -43,6 +45,7 @@ public class ReadQuestions
 class QdemoHandler extends DefaultHandler
 {
 	List<Question> questions = new ArrayList<>();
+	String questionSetName = "";
 	String currentElement = "";
 	String myNamespace = "http://elvenrings.com/qdemo";
 	Question currentQuestion = null;
@@ -54,6 +57,11 @@ class QdemoHandler extends DefaultHandler
 	public List<Question> getQuestions()
 	{
 		return questions;
+	}
+	
+	public String getQuestionSetName()
+	{
+		return questionSetName;
 	}
 	@Override
 	public void startDocument() throws SAXException
@@ -70,6 +78,10 @@ class QdemoHandler extends DefaultHandler
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException
 	{
+		if(localName.equals("name"))
+		{
+			currentElement = "name";
+		}
 		if(localName.equals("fill-blank"))
 		{
 			currentQuestion = new FillBlankQuestion();
@@ -196,6 +208,10 @@ class QdemoHandler extends DefaultHandler
 		String s = new String(ch, start, length);
 		System.out.println("questionType:" + questionType + ", " +currentElement + ":    " + s);
 
+		if(currentElement.equals("name"))
+		{
+			questionSetName = s;
+		}
 		if(currentElement.equals("preamble"))
 		{
 			currentQuestion.addPreambleText(s);

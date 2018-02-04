@@ -20,6 +20,7 @@ import com.elvenrings.qdemo.xml.ReadQuestions;
 public class XMLFileLoader implements ActionListener
 {
 	private List<QuestionFileLoadListener> listeners = new ArrayList<>();
+	private File lastFile;
 
 	public void addQuestionFileLoadListener(QuestionFileLoadListener listener)
 	{
@@ -43,7 +44,7 @@ public class XMLFileLoader implements ActionListener
 	public void actionPerformed(ActionEvent e)
 	{
 		ReadQuestions rq;
-		JFileChooser fc = new JFileChooser();
+		JFileChooser fc = new JFileChooser(lastFile);
 		fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
 		fc.setFileFilter(new XmlFileFilter());
 
@@ -51,6 +52,7 @@ public class XMLFileLoader implements ActionListener
 		if (result == JFileChooser.APPROVE_OPTION)
 		{
 			File file = fc.getSelectedFile();
+			lastFile = file;
 			System.out.println(file);
 
 			try

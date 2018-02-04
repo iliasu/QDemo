@@ -2,6 +2,7 @@ package com.elvenrings.qdemo.view.swing;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashSet;
@@ -78,7 +79,7 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 	public QPanel render()
 	{
 		QPanel questionPanel = super.render();
-		questionPanel.setBackground(Color.WHITE);
+		//questionPanel.setBackground(Color.WHITE);
 		questionPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
 		
@@ -139,11 +140,15 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 			checkBoxes[i] = new JCheckBox();
 			checkBoxes[i].setText(optionList.get(i));
 			box.add(Box.createVerticalGlue());
+			checkBoxes[i].setAlignmentX(Component.LEFT_ALIGNMENT);
 			box.add(checkBoxes[i]);
 		}
 		
 		box.add(Box.createVerticalStrut(5));
+		submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(submitButton);
+		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+		box.add(messageLabel);
 		return box;
 	}
 	

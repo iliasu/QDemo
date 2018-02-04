@@ -3,6 +3,9 @@ package com.elvenrings.qdemo.app;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -10,7 +13,9 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,7 +23,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JToolBar;
@@ -31,18 +38,21 @@ import javax.swing.border.BevelBorder;
 public class Application extends JFrame
 {
 	
-	//private Mediator mediator = new Mediator();
-	//private QuestionMap question = new QuestionMap();
 	private XMLFileLoader xmlFileLoader = new XMLFileLoader();
 	private JTabbedPane tabbedPane;
-	JPanel mainPanel;
-	private JPanel testPanel;
+	private JPanel mainPanel;
+	private JPanel repoPanel;
 	private JPanel mainWestPanel;
 	private JPanel mainSouthPanel;
 	private JPanel mainNorthPanel;
 	private JPanel mainCentralPanel;
-	JComboBox<DefaultCarousel> cmbLoadedFiles;
+	JComboBox<CarouselContainer> carouselList;
 	private JTextArea updateArea;
+	private JCheckBoxMenuItem welcomeScreen;
+	private JCheckBoxMenuItem endScreen;
+	private JRadioButtonMenuItem singleSubmit;
+	private JRadioButtonMenuItem groupSubmit;
+	private AboutDialog aboutDialog;
 	
 	private static final long serialVersionUID = 1L;
 	private static ApplicationContext context = ApplicationContext.getInstance();
@@ -54,16 +64,15 @@ public class Application extends JFrame
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			//UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		
 		layoutMenus();
-		//layoutToolbar();
 		layoutComponents();
 		
 		setSize(970,600);
@@ -75,13 +84,14 @@ public class Application extends JFrame
 	{
 		tabbedPane = new JTabbedPane();
 		mainPanel = new JPanel();
-		testPanel = new JPanel();
+		repoPanel = new JPanel();
 		
 		
 		
 		mainPanel.setLayout(new BorderLayout());
 		
 		mainWestPanel = new JPanel();
+		mainWestPanel.setLayout(new BorderLayout());
 		mainWestPanel.setPreferredSize(new Dimension(200,300));
 		mainWestPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		mainWestPanel.setBackground(new Color(206, 217, 228));
@@ -97,98 +107,163 @@ public class Application extends JFrame
 		mainCentralPanel.setLayout(new BorderLayout());
 		
 		
-		cmbLoadedFiles = new JComboBox<>();
-		cmbLoadedFiles.addItemListener(new ItemListener() {
+		carouselList = new JComboBox<>();
+		carouselList.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
 				if(e.getStateChange() == ItemEvent.SELECTED)
 				{
-					DefaultCarousel carousel = (DefaultCarousel) e.getItem();
+					CarouselContainer container = (CarouselContainer) e.getItem();
 					mainCentralPanel.removeAll();
-					mainCentralPanel.add(carousel);
+					mainCentralPanel.add(container.getCarousel());
 					mainCentralPanel.repaint();
 					mainCentralPanel.revalidate();
+					
+					mainWestPanel.removeAll();
+					mainWestPanel.add(container.getCarouselControlBox());
+					mainWestPanel.repaint();
+					mainWestPanel.revalidate();
+					carouselList.setSelectedItem(container);
 				}
 			}
 			
 		});
-		//cmbLoadedFiles.setEnabled(false);
-		//cmbLoadedFiles.addItem("-------------------------------------");
-		cmbLoadedFiles.setPreferredSize(new Dimension(300,30));
+
+		carouselList.setPreferredSize(new Dimension(300,30));
 	
 		Box northBox = Box.createHorizontalBox();
 		
-		northBox.add(new JLabel("Question Files: "));
+		northBox.add(new JLabel("Loaded Files: "));
 		northBox.add(Box.createHorizontalGlue());
-		northBox.add(cmbLoadedFiles);
+		northBox.add(carouselList);
 		mainNorthPanel.add(northBox, BorderLayout.WEST);
 		
-		
-		mainPanel.add(mainWestPanel, BorderLayout.WEST);
+		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.add(mainWestPanel, JSplitPane.LEFT);
+		splitPane.add(mainCentralPanel, JSplitPane.RIGHT);
 		mainPanel.add(mainSouthPanel, BorderLayout.SOUTH);
 		mainPanel.add(mainNorthPanel, BorderLayout.NORTH);
-		mainPanel.add(mainCentralPanel, BorderLayout.CENTER);
+		mainPanel.add(splitPane, BorderLayout.CENTER);
 		
 		updateArea = new JTextArea();
+		updateArea.setMaximumSize(new Dimension(updateArea.getMaximumSize().width, 80));
+		updateArea.setPreferredSize(new Dimension(updateArea.getMaximumSize().width, 80));
 		updateArea.setEditable(false);
-		updateArea.append("Lock and loaded...:)\n");
 		
-		
-		tabbedPane.add("Main", mainPanel);
-		tabbedPane.addTab("Test", testPanel);
+		tabbedPane.add("Home", mainPanel);
+		tabbedPane.addTab("Repository", repoPanel);
 		tabbedPane.setTabPlacement(JTabbedPane.TOP);
 		this.add(tabbedPane, BorderLayout.CENTER);
-		this.add(new JScrollPane(updateArea), BorderLayout.SOUTH);
+		JScrollPane scrollPane = new JScrollPane(updateArea);
+		this.add(scrollPane, BorderLayout.SOUTH);
 		
+		populateContext();
+	}
+
+	private void populateContext()
+	{
 		ApplicationContext.put("mainpanel", mainPanel);
-		ApplicationContext.put("testPanel", testPanel);
+		ApplicationContext.put("repoPanel", repoPanel);
 		ApplicationContext.put("mainwestpanel", mainWestPanel);
 		ApplicationContext.put("mainsoutpanel", mainSouthPanel);
 		ApplicationContext.put("mainnorthpanel", mainNorthPanel);
-		ApplicationContext.put("cmbLoadedFiles", cmbLoadedFiles);
+		ApplicationContext.put("carouselList", carouselList);
 		ApplicationContext.put("tabbedPane", tabbedPane);
 		ApplicationContext.put("updateArea", updateArea);
+		ApplicationContext.put("welcomeScreen", welcomeScreen);
+		ApplicationContext.put("endScreen", endScreen);
+		ApplicationContext.put("singleSubmit", singleSubmit);
+		ApplicationContext.put("groupSubmit", groupSubmit);
 	}
-
 
 	public void layoutMenus()
 	{
-		ComboPopulator populator = new ComboPopulator(context);
+		Loader populator = new Loader(context);
 		xmlFileLoader.addQuestionFileLoadListener(populator);
 		
 		JMenuBar menuBar = new JMenuBar();
 		/*--------------------------------*/
+		/*Menus                           */
+		/*--------------------------------*/
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
+		
+		JMenu loadMenu = new JMenu("Load");
+		loadMenu.setMnemonic(KeyEvent.VK_L);
 		
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
 		
 		/*--------------------------------*/
+		/*Menu Items                      */
+		/*--------------------------------*/
 		JMenuItem loadItem = new JMenuItem("Load Questions");
 		loadItem.setMnemonic(KeyEvent.VK_L);
-		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, InputEvent.CTRL_MASK ));
+		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK ));
 		loadItem.addActionListener(xmlFileLoader);
-		
 		
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
 		
+		JMenu optionsItem = new JMenu("Options") ;
+		
+		welcomeScreen = new JCheckBoxMenuItem("Welcome Screen");
+		welcomeScreen.setSelected(false);
+		endScreen = new JCheckBoxMenuItem("End Screen");
+		endScreen.setSelected(false);
+		
+		ButtonGroup submitGroup = new ButtonGroup();
+		singleSubmit = new JRadioButtonMenuItem("Single Submit");
+		groupSubmit = new JRadioButtonMenuItem("Group Submit");
+		submitGroup.add(singleSubmit);
+		submitGroup.add(groupSubmit);
+		groupSubmit.setSelected(true);
+		
+		JMenu timeAttack = new JMenu("Time Attack Options");
+		JCheckBoxMenuItem timeAttackItem = new JCheckBoxMenuItem("Enabled");
+		timeAttackItem.setSelected(false);
+		timeAttack.add(timeAttackItem);
+		
 		JMenuItem aboutItem = new JMenuItem("About");
 		aboutItem.setMnemonic(KeyEvent.VK_A);
+		aboutItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				if(aboutDialog == null)
+				{
+					aboutDialog = new AboutDialog();
+				}
+				aboutDialog.setLocationRelativeTo(Application.this);
+				aboutDialog.setVisible(true);
+				
+			}
+		});
 		/*--------------------------------*/
 		
 		fileMenu.add(loadItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
-				
+			
+		loadMenu.add(optionsItem);
+		optionsItem.add(welcomeScreen);
+		optionsItem.add(endScreen);
+		optionsItem.addSeparator();
+		optionsItem.add(singleSubmit);
+		optionsItem.add(groupSubmit);
+		optionsItem.addSeparator();
+		optionsItem.add(timeAttack);
+		
+		
 		helpMenu.add(aboutItem);
 		
 		menuBar.add(fileMenu);
+		menuBar.add(loadMenu);
 		menuBar.add(helpMenu);
+		
 		
 		setJMenuBar(menuBar);
 		
@@ -215,6 +290,12 @@ public class Application extends JFrame
 			{
 				Application application = new Application();
 				application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				
+				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+				Dimension size = application.getSize();
+				int y = (screenSize.height  - size.height) / 2;
+				int x = (screenSize.width - size.width) / 2;
+				application.setLocation(x, y);
 			}
 		});
 	}

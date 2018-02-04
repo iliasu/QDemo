@@ -5,12 +5,14 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import com.elvenrings.qdemo.interfaces.SwingRenderer;
 import com.elvenrings.qdemo.model.FillBlankQuestion;
 import com.elvenrings.qdemo.model.MultipleChoiceQuestion;
 import com.elvenrings.qdemo.model.Question;
@@ -32,9 +34,12 @@ public class DefaultCarousel extends JPanel
 	List<Question> questions;
 	private CardLayout cardManager;
 	InternalMediator mediator = new InternalMediator();
+	List<SwingRenderer> rendererList = new ArrayList<>();
 	private int count = 0;
 	private boolean submitImmediate = true;
 	private String name;
+	
+	public NextButton nextButton;
 
 	public DefaultCarousel(String name, ReadQuestions readQuestions, JPanel firstPanel, JPanel lastPanel,
 			boolean submitImmediate) throws TrackerException
@@ -69,7 +74,7 @@ public class DefaultCarousel extends JPanel
 		tracker = new Tracker();
 		tracker.init(1, count, 1);
 
-		NextButton nextButton = new NextButton(">", mediator);
+		nextButton = new NextButton(">", mediator);
 		PrevButton prevButton = new PrevButton("<", mediator);
 		FirstButton firstButton = new FirstButton("<<", mediator);
 		LastButton lastButton = new LastButton(">>", mediator);
@@ -84,11 +89,6 @@ public class DefaultCarousel extends JPanel
 		box.add(lastButton);
 		buttonPanel.add(box);
 
-	//	mediator.registerNext(nextButton);
-	//	mediator.registerPrev(prevButton);
-	//	mediator.registerFirst(firstButton);
-	//	mediator.registerLast(lastButton);
-
 		this.revalidate();
 		mediator.init();
 
@@ -97,7 +97,7 @@ public class DefaultCarousel extends JPanel
 	@Override
 	public String toString()
 	{
-		return "<" + name + ">";
+		return name;
 	}
 
 	protected void createQuestionPanels()
@@ -112,6 +112,7 @@ public class DefaultCarousel extends JPanel
 			{
 				SingleChoiceQuestion q2 = (SingleChoiceQuestion) q;
 				scsr = new SingleChoiceSwingRenderer(q2);
+				rendererList.add(scsr);
 				mainPanel.add(Integer.toString(++count), scsr.render());
 				JButton submitButton = scsr.getSubmitButton();
 				if (submitImmediate)
@@ -127,6 +128,7 @@ public class DefaultCarousel extends JPanel
 			{
 				MultipleChoiceQuestion q2 = (MultipleChoiceQuestion) q;
 				mcsr = new MultipleChoiceSwingRenderer(q2);
+				rendererList.add(mcsr);
 				mainPanel.add(Integer.toString(++count), mcsr.render());
 				JButton submitButton = mcsr.getSubmitButton();
 				if (submitImmediate)
@@ -141,6 +143,7 @@ public class DefaultCarousel extends JPanel
 			{
 				FillBlankQuestion q2 = (FillBlankQuestion) q;
 				fbsr = new FillBlankSwingRenderer(q2);
+				rendererList.add(fbsr);
 				mainPanel.add(Integer.toString(++count), fbsr.render());
 				JButton submitButton = fbsr.getSubmitButton();
 				if (submitImmediate)

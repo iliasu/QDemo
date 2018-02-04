@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
@@ -35,6 +35,7 @@ import com.elvenrings.qdemo.view.swing.listeners.SubmitSwingListener;
 public abstract class DefaultSwingRenderer extends AbstractRenderer implements SwingRenderer
 {
 	protected JButton submitButton;
+	protected JLabel messageLabel = new JLabel();
 	protected List<SubmitSwingListener> listeners = new ArrayList<SubmitSwingListener>();
 	private QPanel panel = null;
 
@@ -73,7 +74,6 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 		panel = new QPanel();
 		panel.setLayout(new BorderLayout());
 
-		JTextArea textArea = new JTextArea();
 		JTextPane textPane = new JTextPane();
 		StyledDocument document = textPane.getStyledDocument();
 		Style def = textPane.getStyledDocument().getStyle(StyleContext.DEFAULT_STYLE);
@@ -127,13 +127,14 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 			sb.append(str);
 		}
 		
-		textArea.revalidate();
-		textArea.repaint();
-		textArea.setEditable(false);
 		return panel;
 	}
 
 
+	public JLabel getMessageLabel()
+	{
+		return this.messageLabel;
+	}
 
 	public JButton getSubmitButton()
 	{
