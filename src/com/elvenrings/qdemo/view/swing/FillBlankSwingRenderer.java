@@ -3,6 +3,7 @@ package com.elvenrings.qdemo.view.swing;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
@@ -34,7 +36,8 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 {
 	private String[] input = null;
 	private JTextField textField = null;
-	QPanel mainPanel = new QPanel();
+	private JLabel colorStatusLabel = null;
+	//QPanel mainPanel;
 
 	/**
 	 * Single Parameter constructor accepts a <code>FillBlankQuestion</code> as the
@@ -76,16 +79,17 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	@Override
 	public QPanel render()
 	{
-		QPanel questionPanel = super.render();
+		mainPanel = super.render();
 		//questionPanel.setBackground(Color.WHITE);
-		questionPanel.setBackground(Color.BLACK);
+		
+		mainPanel.questionPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
 		
 		mainPanel.setOpaque(true);
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setForeground(Color.BLACK);
 		
-		mainPanel.add(questionPanel,BorderLayout.CENTER);
+		mainPanel.add(mainPanel.tabbedPane,BorderLayout.CENTER);
 		
 		Box box = layoutOptions();
 		mainPanel.add(box,BorderLayout.SOUTH);
@@ -105,20 +109,42 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	{
 		Box box = Box.createVerticalBox();
 		box.setOpaque(true);
-		box.setBackground(new Color(234,234,234));
+		box.setBackground(BOXCOLOR);
 		textField = new JTextField(10);
 		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(textField);
 		box.add(Box.createVerticalStrut(5));
-		submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		box.add(submitButton);
+		//submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		Box box2 = Box.createHorizontalBox();
+		setupColorStatusLabel();
+		
+		box2.add(submitButton);
+		box2.add(Box.createHorizontalGlue());
+		box2.add(colorStatusLabel);
+		box2.setAlignmentX(Component.LEFT_ALIGNMENT);
+		
+		box.add(box2);
 		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(messageLabel);
 		
 		return box;
 
 	}
+	
+	private void setupColorStatusLabel()
+	{
+		colorStatusLabel = new JLabel("");
+		colorStatusLabel.setOpaque(true);
+		colorStatusLabel.setPreferredSize(new Dimension(26,26));
+		colorStatusLabel.setMaximumSize(new Dimension(26,26));
+		colorStatusLabel.setBackground(BOXCOLOR);
+	}
 
+	public JLabel getColorStatusLabel()
+	{
+		return this.colorStatusLabel;
+	}
+	
 	/**
 	 * Retrieves user input. Separate tokens should be delimited by a comma.
 	 * 

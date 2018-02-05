@@ -1,8 +1,7 @@
 package com.elvenrings.qdemo.view.swing;
 
-import java.awt.GridBagConstraints;
-
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
  * A subclass of JPanel, this class bundles with itself a GridBagConstraints
@@ -15,22 +14,43 @@ import javax.swing.JPanel;
  */
 public class QPanel extends JPanel
 {
-	private GridBagConstraints gc = new GridBagConstraints();
+	//private GridBagConstraints gc = new GridBagConstraints();
 	private static final long serialVersionUID = 1L;
+	protected JTabbedPane tabbedPane;
+	protected JPanel questionPanel;
+	protected JPanel solutionPanel;
 
 	/** Default constructor creates a new QPanel */
 	public QPanel()
 	{
-		super();
-		gc.gridx=0;
-		gc.gridy=0;
+		tabbedPane = new JTabbedPane();
+		questionPanel = new JPanel();
+		solutionPanel = new JPanel();
+		tabbedPane.addTab("question", questionPanel);
+		tabbedPane.addTab("solution", solutionPanel);
+		tabbedPane.setEnabledAt(1, false);
 	}
-	/** Returns a <code>GridBagConstraints</code> object.
-	 * 
-	 * @return <code>GridBagConstraints</code> object
-	 */
-	public GridBagConstraints getConstraints()
+	
+	public JPanel getQuestionPanel()
 	{
-		return gc;
+		return this.questionPanel;
 	}
+	
+	public JPanel getSolutionPanel()
+	{
+		return this.solutionPanel;
+	}
+	
+	public JTabbedPane getTabbedPane()
+	{
+		return this.tabbedPane;
+	}
+	//** Returns a <code>GridBagConstraints</code> object.
+	// * 
+	// * @return <code>GridBagConstraints</code> object
+	// */
+	//public GridBagConstraints getConstraints()
+	//{
+	//	return gc;
+	//}
 }

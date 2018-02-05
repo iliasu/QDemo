@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -52,16 +54,20 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private SubmitSwingListener singleListener;
 	private boolean groupSubmit = true;
 	private Tally tally = new Tally();
+	//private final static Color CORRECT = new Color(53, 205, 75);
+	//private final static Color WRONG = new Color(252, 98, 93);
+	private static Icon correctIcon = new ImageIcon("/Users/iliasusalifu/Downloads/icons8-checked-checkbox-26.png");
+	private static Icon wrongIcon = new ImageIcon("/Users/iliasusalifu/Downloads/icons8-close-window-26.png");
 
 	public CarouselControlBox(DefaultCarousel carousel, boolean groupSubmit)
 	{
 		this.carousel = carousel;
 		this.groupSubmit = groupSubmit;
-		
+
 		setupResultLabel();
 		setupAttemptLabel();
 		setupGroupSubmitButton(groupSubmit);
-		
+
 		this.setLayout(new BorderLayout());
 		this.add(resultLabel, BorderLayout.NORTH);
 		this.add(attemptLabel, BorderLayout.CENTER);
@@ -155,7 +161,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		this.resultLabel.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.GRAY));
 	}
-	
+
 	private void setupAttemptLabel()
 	{
 		this.attemptLabel = new JLabel("");
@@ -220,6 +226,52 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	{
 		int correct = event.getCorrect();
 		int total = event.getTotal();
+		Map<SwingRenderer, Boolean> rendererMap = event.getRendererMap();
+		for (SwingRenderer renderer : rendererMap.keySet())
+		{
+			if (renderer instanceof FillBlankSwingRenderer)
+			{
+				FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
+				JLabel label = fbsr.getColorStatusLabel();
+				if (rendererMap.get(renderer))
+				{
+					label.setIcon(correctIcon);
+				} else
+				{
+					label.setIcon(wrongIcon);
+				}
+			}
+			
+			if (renderer instanceof SingleChoiceSwingRenderer)
+			{
+				SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
+				JLabel label = scsr.getColorStatusLabel();
+				if (rendererMap.get(renderer))
+				{
+					//label.setOpaque(false);
+					label.setBackground(new Color(234, 234, 234));
+					label.setHorizontalTextPosition(SwingConstants.RIGHT);
+					label.setIcon(correctIcon);
+					
+				} else
+				{
+					label.setIcon(wrongIcon);
+				}
+			}
+			
+			if (renderer instanceof MultipleChoiceSwingRenderer)
+			{
+				MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
+				JLabel label = mcsr.getColorStatusLabel();
+				if (rendererMap.get(renderer))
+				{
+					label.setIcon(correctIcon);
+				} else
+				{
+					label.setIcon(wrongIcon);
+				}
+			}
+		}
 		tally.incrementCorrect(correct);
 		tally.incrementWrong(total - correct);
 		writeToLabel();
@@ -251,7 +303,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		handleFillBlank(attempts, correct, renderer, allowedAttempts);
 
 		handleSingleChoice(attempts, correct, renderer, allowedAttempts);
-		
+
 		handleMultipleChoice(attempts, correct, renderer, allowedAttempts);
 
 	}
@@ -259,42 +311,49 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private void handleMultipleChoice(Integer attempts, boolean correct, SwingRenderer renderer,
 			Integer allowedAttempts)
 	{
-		if(renderer instanceof MultipleChoiceSwingRenderer)
+		if (renderer instanceof MultipleChoiceSwingRenderer)
 		{
 			MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
 			mcsr.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
 			JCheckBox[] checkBoxes = mcsr.getCheckBoxes();
-			if(correct)
+			if (correct)
 			{
 				mcsr.getSubmitButton().setEnabled(false);
-				this.carousel.nextButton.doClick();
-				for(JCheckBox checkBox : checkBoxes)
+				//this.carousel.nextButton.doClick();
+				mcsr.getColorStatusLabel().setIcon(correctIcon);
+				// JTabbedPane pane = mcsr.getMainPanel().getTabbedPane();
+				// pane.setEnabledAt(1, true);
+				// mcsr.getMainPanel().getSolutionPanel().requestFocus();
+				for (JCheckBox checkBox : checkBoxes)
 				{
 					checkBox.setEnabled(false);
 				}
 				tally.incrementCorrect();
 				writeToLabel();
-				
+
 				System.out.println("Correct after " + attempts + " attempt(s).");
-			}
-			else {
-				if(attempts >= allowedAttempts)
+			} else
+			{
+				if (attempts >= allowedAttempts)
 				{
 					mcsr.getSubmitButton().setEnabled(false);
-					for(JCheckBox checkBox : checkBoxes)
+					mcsr.getColorStatusLabel().setIcon(wrongIcon);
+					for (JCheckBox checkBox : checkBoxes)
 					{
 						checkBox.setEnabled(false);
 					}
 					tally.incrementWrong();
 					writeToLabel();
+					// JTabbedPane pane = mcsr.getMainPanel().getTabbedPane();
+					// pane.setEnabledAt(1, true);
+					// mcsr.getMainPanel().getSolutionPanel().requestFocus();
 					System.out.println("Wrong after " + attempts + " attempt(s).");
-				}
-				else
+				} else
 				{
-					
+
 					System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
 				}
-				
+
 			}
 		}
 	}
@@ -303,15 +362,16 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	{
 		if (renderer instanceof SingleChoiceSwingRenderer)
 		{
-			
+
 			SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
 			scsr.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
-			
+
 			JRadioButton[] radioButtons = scsr.getRadioButtons();
 			if (correct)
 			{
 				scsr.getSubmitButton().setEnabled(false);
-				this.carousel.nextButton.doClick();
+				scsr.getColorStatusLabel().setIcon(correctIcon);
+				//this.carousel.nextButton.doClick();
 				for (JRadioButton button : radioButtons)
 				{
 					button.setEnabled(false);
@@ -325,6 +385,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 				if (attempts >= allowedAttempts)
 				{
 					scsr.getSubmitButton().setEnabled(false);
+					scsr.getColorStatusLabel().setIcon(wrongIcon);
 					for (JRadioButton button : radioButtons)
 					{
 						button.setEnabled(false);
@@ -352,8 +413,9 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 			if (correct)
 			{
 				fbsr.getSubmitButton().setEnabled(false);
+				fbsr.getColorStatusLabel().setIcon(correctIcon);
 				fbsr.getTextField().setEnabled(false);
-				this.carousel.nextButton.doClick();
+				//this.carousel.nextButton.doClick();
 				tally.incrementCorrect();
 				writeToLabel();
 
@@ -363,6 +425,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 				if (attempts >= allowedAttempts)
 				{
 					fbsr.getSubmitButton().setEnabled(false);
+					fbsr.getColorStatusLabel().setIcon(wrongIcon);
 					fbsr.getTextField().setEnabled(false);
 					tally.incrementWrong();
 					writeToLabel();
