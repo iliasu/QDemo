@@ -28,7 +28,7 @@ public class SingleGrader implements SubmitSwingListener
 	@Override
 	public void fillBlankSwingEventOccurred(FillBlankSwingEvent event)
 	{
-		FillBlankQuestion question = event.getRenderer().getQuestion();
+		FillBlankQuestion question = (FillBlankQuestion) event.getRenderer().getQuestion();
 		if (map.containsKey(question))
 		{
 			Integer count = map.get(question);
@@ -52,7 +52,7 @@ public class SingleGrader implements SubmitSwingListener
 	@Override
 	public void singleChoiceSwingEventOccurred(SingleChoiceSwingSelectionEvent event)
 	{
-		SingleChoiceQuestion question = event.getRenderer().getQuestion();
+		SingleChoiceQuestion question = (SingleChoiceQuestion) event.getRenderer().getQuestion();
 		if (map.containsKey(question))
 		{
 			Integer count = map.get(question);
@@ -72,7 +72,7 @@ public class SingleGrader implements SubmitSwingListener
 	@Override
 	public void multipleChoiceSwingEventOccurred(MultipleChoiceSwingSelectionEvent event)
 	{
-		MultipleChoiceQuestion question = event.getRenderer().getQuestion();
+		MultipleChoiceQuestion question = (MultipleChoiceQuestion) event.getRenderer().getQuestion();
 		
 		if (map.containsKey(question))
 		{

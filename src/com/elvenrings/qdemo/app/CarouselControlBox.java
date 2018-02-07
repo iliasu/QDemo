@@ -17,6 +17,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,6 +27,7 @@ import javax.swing.SwingConstants;
 import com.elvenrings.qdemo.interfaces.Choice;
 import com.elvenrings.qdemo.interfaces.SwingRenderer;
 import com.elvenrings.qdemo.model.Question;
+import com.elvenrings.qdemo.utils.Tally;
 import com.elvenrings.qdemo.view.events.Event;
 import com.elvenrings.qdemo.view.events.GroupGradeEvent;
 import com.elvenrings.qdemo.view.events.GroupGradeResultEvent;
@@ -54,8 +56,8 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private SubmitSwingListener singleListener;
 	private boolean groupSubmit = true;
 	private Tally tally = new Tally();
-	//private final static Color CORRECT = new Color(53, 205, 75);
-	//private final static Color WRONG = new Color(252, 98, 93);
+	// private final static Color CORRECT = new Color(53, 205, 75);
+	// private final static Color WRONG = new Color(252, 98, 93);
 	private static Icon correctIcon = new ImageIcon("images/icon_correct.png");
 	private static Icon wrongIcon = new ImageIcon("images/icon_wrong.png");
 
@@ -191,27 +193,9 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 			List<SwingRenderer> rendererList = carousel.rendererList;
 			for (SwingRenderer renderer : rendererList)
 			{
-				if (renderer instanceof FillBlankSwingRenderer)
-				{
 
-					FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
-					fbsr.addSubmitListener(singleListener);
-					fbsr.getMessageLabel().setText("Attempts Remaining: " + fbsr.getQuestion().getAttempts());
-
-				}
-				if (renderer instanceof SingleChoiceSwingRenderer)
-				{
-					SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
-					scsr.addSubmitListener(singleListener);
-					scsr.getMessageLabel().setText("Attempts Remaining: " + scsr.getQuestion().getAttempts());
-				}
-				if (renderer instanceof MultipleChoiceSwingRenderer)
-				{
-					MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
-					mcsr.addSubmitListener(singleListener);
-					mcsr.getMessageLabel().setText("Attempts Remaining: " + mcsr.getQuestion().getAttempts());
-				}
-
+					renderer.addSubmitListener(singleListener);
+					renderer.getMessageLabel().setText("Attempts Remaining: " + renderer.getQuestion().getAttempts());
 			}
 		}
 	}
@@ -229,48 +213,15 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		Map<SwingRenderer, Boolean> rendererMap = event.getRendererMap();
 		for (SwingRenderer renderer : rendererMap.keySet())
 		{
-			if (renderer instanceof FillBlankSwingRenderer)
+			JLabel label = renderer.getColorStatusLabel();
+			if (rendererMap.get(renderer))
 			{
-				FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
-				JLabel label = fbsr.getColorStatusLabel();
-				if (rendererMap.get(renderer))
-				{
-					label.setIcon(correctIcon);
-				} else
-				{
-					label.setIcon(wrongIcon);
-				}
-			}
-			
-			if (renderer instanceof SingleChoiceSwingRenderer)
+				label.setIcon(correctIcon);
+			} else
 			{
-				SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
-				JLabel label = scsr.getColorStatusLabel();
-				if (rendererMap.get(renderer))
-				{
-					//label.setOpaque(false);
-					label.setBackground(new Color(234, 234, 234));
-					label.setHorizontalTextPosition(SwingConstants.RIGHT);
-					label.setIcon(correctIcon);
-					
-				} else
-				{
-					label.setIcon(wrongIcon);
-				}
+				label.setIcon(wrongIcon);
 			}
-			
-			if (renderer instanceof MultipleChoiceSwingRenderer)
-			{
-				MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
-				JLabel label = mcsr.getColorStatusLabel();
-				if (rendererMap.get(renderer))
-				{
-					label.setIcon(correctIcon);
-				} else
-				{
-					label.setIcon(wrongIcon);
-				}
-			}
+
 		}
 		tally.incrementCorrect(correct);
 		tally.incrementWrong(total - correct);
@@ -300,190 +251,43 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		SwingRenderer renderer = event.getRenderer();
 		Integer allowedAttempts = question.getAttempts();
 
-		handleFillBlank(attempts, correct, renderer, allowedAttempts);
-
-		handleSingleChoice(attempts, correct, renderer, allowedAttempts);
-
-		handleMultipleChoice(attempts, correct, renderer, allowedAttempts);
-
+		handle(attempts, correct, renderer, allowedAttempts);
 	}
 
-	private void handleMultipleChoice(Integer attempts, boolean correct, SwingRenderer renderer,
-			Integer allowedAttempts)
+	private void handle(Integer attempts, boolean correct, SwingRenderer renderer, Integer allowedAttempts)
 	{
-		if (renderer instanceof MultipleChoiceSwingRenderer)
+		renderer.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
+		JComponent[] inputComponents = renderer.getInputComponent();
+		if (correct)
 		{
-			MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
-			mcsr.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
-			JCheckBox[] checkBoxes = mcsr.getCheckBoxes();
-			if (correct)
+			renderer.getSubmitButton().setEnabled(false);
+			renderer.getColorStatusLabel().setIcon(correctIcon);
+			for (JComponent component : inputComponents)
 			{
-				mcsr.getSubmitButton().setEnabled(false);
-				//this.carousel.nextButton.doClick();
-				mcsr.getColorStatusLabel().setIcon(correctIcon);
-				// JTabbedPane pane = mcsr.getMainPanel().getTabbedPane();
-				// pane.setEnabledAt(1, true);
-				// mcsr.getMainPanel().getSolutionPanel().requestFocus();
-				for (JCheckBox checkBox : checkBoxes)
+				component.setEnabled(false);
+			}
+			tally.incrementCorrect();
+			writeToLabel();
+			System.out.println("Correct after " + attempts + " attempt(s).");
+		} else
+		{
+			if (attempts >= allowedAttempts)
+			{
+				renderer.getSubmitButton().setEnabled(false);
+				renderer.getColorStatusLabel().setIcon(wrongIcon);
+				for (JComponent component : inputComponents)
 				{
-					checkBox.setEnabled(false);
-				}
-				tally.incrementCorrect();
-				writeToLabel();
+					component.setEnabled(false);
 
-				System.out.println("Correct after " + attempts + " attempt(s).");
+				}
+				tally.incrementWrong();
+				writeToLabel();
+				System.out.println("Wrong after " + attempts + " attempt(s).");
 			} else
 			{
-				if (attempts >= allowedAttempts)
-				{
-					mcsr.getSubmitButton().setEnabled(false);
-					mcsr.getColorStatusLabel().setIcon(wrongIcon);
-					for (JCheckBox checkBox : checkBoxes)
-					{
-						checkBox.setEnabled(false);
-					}
-					tally.incrementWrong();
-					writeToLabel();
-					// JTabbedPane pane = mcsr.getMainPanel().getTabbedPane();
-					// pane.setEnabledAt(1, true);
-					// mcsr.getMainPanel().getSolutionPanel().requestFocus();
-					System.out.println("Wrong after " + attempts + " attempt(s).");
-				} else
-				{
-
-					System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
-				}
-
+				System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
 			}
 		}
 	}
 
-	private void handleSingleChoice(Integer attempts, boolean correct, SwingRenderer renderer, Integer allowedAttempts)
-	{
-		if (renderer instanceof SingleChoiceSwingRenderer)
-		{
-
-			SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
-			scsr.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
-
-			JRadioButton[] radioButtons = scsr.getRadioButtons();
-			if (correct)
-			{
-				scsr.getSubmitButton().setEnabled(false);
-				scsr.getColorStatusLabel().setIcon(correctIcon);
-				//this.carousel.nextButton.doClick();
-				for (JRadioButton button : radioButtons)
-				{
-					button.setEnabled(false);
-				}
-				tally.incrementCorrect();
-				writeToLabel();
-
-				System.out.println("Correct after " + attempts + " attempt(s).");
-			} else
-			{
-				if (attempts >= allowedAttempts)
-				{
-					scsr.getSubmitButton().setEnabled(false);
-					scsr.getColorStatusLabel().setIcon(wrongIcon);
-					for (JRadioButton button : radioButtons)
-					{
-						button.setEnabled(false);
-					}
-					tally.incrementWrong();
-					writeToLabel();
-					System.out.println("Wrong after " + attempts + " attempt(s).");
-				} else
-				{
-
-					System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
-				}
-
-			}
-
-		}
-	}
-
-	private void handleFillBlank(Integer attempts, boolean correct, SwingRenderer renderer, Integer allowedAttempts)
-	{
-		if (renderer instanceof FillBlankSwingRenderer)
-		{
-			FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
-			fbsr.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
-			if (correct)
-			{
-				fbsr.getSubmitButton().setEnabled(false);
-				fbsr.getColorStatusLabel().setIcon(correctIcon);
-				fbsr.getTextField().setEnabled(false);
-				//this.carousel.nextButton.doClick();
-				tally.incrementCorrect();
-				writeToLabel();
-
-				System.out.println("Correct after " + attempts + " attempt(s).");
-			} else
-			{
-				if (attempts >= allowedAttempts)
-				{
-					fbsr.getSubmitButton().setEnabled(false);
-					fbsr.getColorStatusLabel().setIcon(wrongIcon);
-					fbsr.getTextField().setEnabled(false);
-					tally.incrementWrong();
-					writeToLabel();
-					System.out.println("Wrong after " + attempts + " attempt(s).");
-				} else
-				{
-
-					System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
-				}
-
-			}
-		}
-	}
-
-}
-
-class Tally
-{
-	private int correct = 0;
-	private int wrong = 0;
-	private int total = 0;
-
-	public void incrementCorrect(int count)
-	{
-		correct = correct + count;
-		total = total + count;
-	}
-
-	public void incrementWrong(int count)
-	{
-		wrong = wrong + count;
-		total = total + count;
-	}
-
-	public void incrementCorrect()
-	{
-		correct++;
-		total++;
-	}
-
-	public void incrementWrong()
-	{
-		wrong++;
-		total++;
-	}
-
-	public int getTotal()
-	{
-		return total;
-	}
-
-	public int getCorrect()
-	{
-		return correct;
-	}
-
-	public int getWrong()
-	{
-		return wrong;
-	}
 }

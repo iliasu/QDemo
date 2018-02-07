@@ -12,11 +12,14 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
 import com.elvenrings.qdemo.interfaces.Choice;
+import com.elvenrings.qdemo.model.MultipleChoiceQuestion;
+import com.elvenrings.qdemo.model.Question;
 import com.elvenrings.qdemo.model.SingleChoiceQuestion;
 import com.elvenrings.qdemo.view.events.swing.SingleChoiceSwingSelectionEvent;
 import com.elvenrings.qdemo.view.swing.listeners.SubmitSwingListener;
@@ -177,13 +180,21 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 		return this.colorStatusLabel;
 	}
 	
-	public SingleChoiceQuestion getQuestion()
+	@Override
+	public Question getQuestion()
 	{
 		return (SingleChoiceQuestion) question;
 	}
 	
+	
 	public JRadioButton[] getRadioButtons()
 	{
 		return radioButtons;
+	}
+	
+	@Override
+	public JComponent[] getInputComponent()
+	{
+		return  radioButtons;
 	}
 }

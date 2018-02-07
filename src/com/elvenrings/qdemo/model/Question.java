@@ -1,5 +1,7 @@
 package com.elvenrings.qdemo.model;
 
+import com.elvenrings.qdemo.interfaces.Choice;
+
 /**
  * An abstract class representing the idea of a question. A
  * <code>Question</code> consists of a series of ordered <code>Preamble</code>s
@@ -84,4 +86,6 @@ public abstract class Question
 		}
 		fragment.addData(sequence, d);
 	}
+	
+	public abstract Choice getChoice();
 }

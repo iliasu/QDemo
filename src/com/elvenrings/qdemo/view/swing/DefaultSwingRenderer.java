@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -152,5 +153,10 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 	public QPanel getMainPanel()
 	{
 		return this.mainPanel;
+	}
+	
+	public JComponent[] getInputComponent()
+	{
+		return null;
 	}
 }

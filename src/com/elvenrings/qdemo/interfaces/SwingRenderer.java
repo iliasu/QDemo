@@ -1,5 +1,10 @@
 package com.elvenrings.qdemo.interfaces;
 
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+
+import com.elvenrings.qdemo.model.Question;
 import com.elvenrings.qdemo.view.swing.QPanel;
 import com.elvenrings.qdemo.view.swing.listeners.SubmitSwingListener;
 
@@ -24,4 +29,14 @@ public interface SwingRenderer
 	public void addSubmitListener(SubmitSwingListener listener);
 	
 	public void removeSubmitListener(SubmitSwingListener listener);
+	
+	public JComponent[] getInputComponent();
+	
+	public JLabel getMessageLabel();
+	
+	public JButton getSubmitButton();
+	
+	public JLabel getColorStatusLabel();
+	
+	public Question getQuestion();
 }

@@ -14,11 +14,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 
 import com.elvenrings.qdemo.interfaces.Choice;
 import com.elvenrings.qdemo.model.MultipleChoiceQuestion;
+import com.elvenrings.qdemo.model.Question;
 import com.elvenrings.qdemo.view.events.swing.MultipleChoiceSwingSelectionEvent;
 import com.elvenrings.qdemo.view.swing.listeners.SubmitSwingListener;
 
@@ -179,7 +181,8 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 		return this.colorStatusLabel;
 	}
 	
-	public MultipleChoiceQuestion getQuestion()
+	@Override
+	public Question getQuestion()
 	{
 		return (MultipleChoiceQuestion) question;
 	}
@@ -187,5 +190,11 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 	public JCheckBox[] getCheckBoxes()
 	{
 		return checkBoxes;
+	}
+	
+	@Override
+	public JComponent[] getInputComponent()
+	{
+		return  checkBoxes;
 	}
 }

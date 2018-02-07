@@ -12,12 +12,14 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 import com.elvenrings.qdemo.interfaces.Choice;
 import com.elvenrings.qdemo.model.FillBlankQuestion;
+import com.elvenrings.qdemo.model.Question;
 import com.elvenrings.qdemo.view.events.swing.FillBlankSwingEvent;
 import com.elvenrings.qdemo.view.swing.listeners.SubmitSwingListener;
 
@@ -175,7 +177,8 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		return strTokens;
 	}
 	
-	public FillBlankQuestion getQuestion()
+	@Override
+	public Question getQuestion()
 	{
 		return (FillBlankQuestion) question;
 	}
@@ -185,4 +188,12 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		return this.textField;
 	}
 
+	@Override
+	public JComponent[] getInputComponent()
+	{
+		JComponent[] cs = {textField};
+		return  cs;
+	}
+
+	
 }
