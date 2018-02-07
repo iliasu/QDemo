@@ -56,8 +56,8 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private Tally tally = new Tally();
 	//private final static Color CORRECT = new Color(53, 205, 75);
 	//private final static Color WRONG = new Color(252, 98, 93);
-	private static Icon correctIcon = new ImageIcon("/Users/iliasusalifu/Downloads/icons8-checked-checkbox-26.png");
-	private static Icon wrongIcon = new ImageIcon("/Users/iliasusalifu/Downloads/icons8-close-window-26.png");
+	private static Icon correctIcon = new ImageIcon("images/icon_correct.png");
+	private static Icon wrongIcon = new ImageIcon("images/icon_wrong.png");
 
 	public CarouselControlBox(DefaultCarousel carousel, boolean groupSubmit)
 	{
