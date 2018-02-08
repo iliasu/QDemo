@@ -39,7 +39,7 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	private String[] input = null;
 	private JTextField textField = null;
 	private JLabel colorStatusLabel = null;
-	//QPanel mainPanel;
+	// QPanel mainPanel;
 
 	/**
 	 * Single Parameter constructor accepts a <code>FillBlankQuestion</code> as the
@@ -67,9 +67,10 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 
 	private void fireFillBlankEvent(FillBlankSwingEvent event)
 	{
-		for (SubmitSwingListener l : listeners)
+		SubmitSwingListener[] swingListeners = listeners.getListeners(SubmitSwingListener.class);
+		for (int i = 0; i < swingListeners.length; i++)
 		{
-			l.fillBlankSwingEventOccurred(event);
+			swingListeners[i].fillBlankSwingEventOccurred(event);
 		}
 	}
 
@@ -82,29 +83,28 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	public QPanel render()
 	{
 		mainPanel = super.render();
-		//questionPanel.setBackground(Color.WHITE);
-		
+		// questionPanel.setBackground(Color.WHITE);
+
 		mainPanel.questionPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
-		
+
 		mainPanel.setOpaque(true);
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setForeground(Color.BLACK);
-		
-		mainPanel.add(mainPanel.tabbedPane,BorderLayout.CENTER);
-		
+
+		mainPanel.add(mainPanel.tabbedPane, BorderLayout.CENTER);
+
 		Box box = layoutOptions();
-		mainPanel.add(box,BorderLayout.SOUTH);
-		
-		
+		mainPanel.add(box, BorderLayout.SOUTH);
+
 		Border outsideBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		Border insideBorder = BorderFactory.createEtchedBorder();
 
 		Border border = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
-		
+
 		mainPanel.setBorder(border);
 		return mainPanel;
-		
+
 	}
 
 	private Box layoutOptions()
@@ -116,29 +116,29 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		textField.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(textField);
 		box.add(Box.createVerticalStrut(5));
-		//submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		// submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		Box box2 = Box.createHorizontalBox();
 		setupColorStatusLabel();
-		
+
 		box2.add(submitButton);
 		box2.add(Box.createHorizontalGlue());
 		box2.add(colorStatusLabel);
 		box2.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		box.add(box2);
 		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(messageLabel);
-		
+
 		return box;
 
 	}
-	
+
 	private void setupColorStatusLabel()
 	{
 		colorStatusLabel = new JLabel("");
 		colorStatusLabel.setOpaque(true);
-		colorStatusLabel.setPreferredSize(new Dimension(26,26));
-		colorStatusLabel.setMaximumSize(new Dimension(26,26));
+		colorStatusLabel.setPreferredSize(new Dimension(26, 26));
+		colorStatusLabel.setMaximumSize(new Dimension(26, 26));
 		colorStatusLabel.setBackground(BOXCOLOR);
 	}
 
@@ -146,7 +146,7 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	{
 		return this.colorStatusLabel;
 	}
-	
+
 	/**
 	 * Retrieves user input. Separate tokens should be delimited by a comma.
 	 * 
@@ -176,13 +176,13 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 
 		return strTokens;
 	}
-	
+
 	@Override
 	public Question getQuestion()
 	{
 		return (FillBlankQuestion) question;
 	}
-	
+
 	public JTextField getTextField()
 	{
 		return this.textField;
@@ -191,9 +191,8 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 	@Override
 	public JComponent[] getInputComponent()
 	{
-		JComponent[] cs = {textField};
-		return  cs;
+		JComponent[] cs = { textField };
+		return cs;
 	}
 
-	
 }

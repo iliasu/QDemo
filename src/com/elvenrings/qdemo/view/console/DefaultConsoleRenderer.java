@@ -1,7 +1,6 @@
 package com.elvenrings.qdemo.view.console;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.swing.event.EventListenerList;
 
 import com.elvenrings.qdemo.interfaces.ConsoleRenderer;
 import com.elvenrings.qdemo.model.Body;
@@ -21,7 +20,7 @@ import com.elvenrings.qdemo.view.swing.listeners.SubmitConsoleListener;
  */
 public abstract class DefaultConsoleRenderer extends AbstractRenderer implements ConsoleRenderer
 {
-	protected List<SubmitConsoleListener> listeners = new ArrayList<SubmitConsoleListener>();
+	protected EventListenerList listeners = new EventListenerList();
 
 	/**
 	 * Registers a <code>SubmitConsoleListener</code> with this Renderer.
@@ -31,7 +30,7 @@ public abstract class DefaultConsoleRenderer extends AbstractRenderer implements
 	 */
 	public void addSubmitListener(SubmitConsoleListener listener)
 	{
-		listeners.add(listener);
+		listeners.add(SubmitConsoleListener.class, listener);
 	}
 
 	/**
@@ -43,7 +42,7 @@ public abstract class DefaultConsoleRenderer extends AbstractRenderer implements
 	 */
 	public void removeSubmitListener(SubmitConsoleListener listener)
 	{
-		listeners.remove(listener);
+		listeners.remove(SubmitConsoleListener.class, listener);
 	}
 
 	/**

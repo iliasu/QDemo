@@ -81,9 +81,11 @@ public class SingleChoiceConsoleRenderer extends DefaultConsoleRenderer
 
 	private void fireSingleChoiceEvent(SingleChoiceConsoleSelectionEvent event)
 	{
-		for (SubmitConsoleListener listener : listeners)
+		SubmitConsoleListener[] consoleListeners = listeners.getListeners(SubmitConsoleListener.class);
+		
+		for(int i=0; i< consoleListeners.length; i++)
 		{
-			listener.singleChoiceConsoleEventOccurred(event);
+			consoleListeners[i].singleChoiceConsoleEventOccurred(event);
 		}
 	}
 

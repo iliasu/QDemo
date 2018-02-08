@@ -1,9 +1,9 @@
 package com.elvenrings.qdemo.view.swing.markers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import javax.swing.event.EventListenerList;
 
 import com.elvenrings.qdemo.interfaces.SwingRenderer;
 import com.elvenrings.qdemo.model.Question;
@@ -25,7 +25,7 @@ public class GroupGrader implements GroupGraderListener
 	private SingleChoiceMarker singleChoiceMarker = new SingleChoiceMarker();
 	private MultipleChoiceMarker multiChoiceMarker = new MultipleChoiceMarker();
 	
-	private List<GroupGraderResultListener> listeners = new ArrayList<>();
+	private EventListenerList listeners = new EventListenerList();
 	
 	@Override
 	public void gradingActivitySubmitted(GroupGradeEvent event)
@@ -93,19 +93,21 @@ public class GroupGrader implements GroupGraderListener
 
 	public void addGroupGraderResultListener(GroupGraderResultListener listener)
 	{
-		listeners.add(listener);
+		listeners.add(GroupGraderResultListener.class, listener);
 	}
 	
 	public void removeGroupGraderResultListener(GroupGraderResultListener listener)
 	{
-		listeners.remove(listener);
+		listeners.remove(GroupGraderResultListener.class, listener);
 	}
 	
 	private void fireGroupGradeResultEvent(GroupGradeResultEvent event)
 	{
-		for(GroupGraderResultListener listener : listeners)
+		
+		GroupGraderResultListener[] resultListeners = listeners.getListeners(GroupGraderResultListener.class);
+		for(int i=0; i< resultListeners.length; i++)
 		{
-			listener.gradingActivityCompleted(event);
+			resultListeners[i].gradingActivityCompleted(event);
 		}
 	}
 }

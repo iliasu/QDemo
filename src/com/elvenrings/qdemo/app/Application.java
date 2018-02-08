@@ -37,7 +37,7 @@ import javax.swing.border.BevelBorder;
 
 public class Application extends JFrame
 {
-	
+
 	private XMLFileLoader xmlFileLoader = new XMLFileLoader();
 	private JTabbedPane tabbedPane;
 	private JPanel mainPanel;
@@ -53,76 +53,71 @@ public class Application extends JFrame
 	private JRadioButtonMenuItem singleSubmit;
 	private JRadioButtonMenuItem groupSubmit;
 	private AboutDialog aboutDialog;
-	
-	
+
 	private static final long serialVersionUID = 1L;
 	private static ApplicationContext context = ApplicationContext.getInstance();
+
 	public Application()
 	{
 		super("QDemo");
 		try
 		{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-			//UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
-			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+			// UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+			// UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
+			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e)
 		{
 			e.printStackTrace();
 		}
-		
-		
+
 		layoutMenus();
 		layoutComponents();
-		
-		setSize(970,600);
+
+		setSize(970, 600);
 		setVisible(true);
 	}
-	
-	
+
 	private void layoutComponents()
 	{
 		tabbedPane = new JTabbedPane();
 		mainPanel = new JPanel();
 		repoPanel = new JPanel();
-		
-		
-		
+
 		mainPanel.setLayout(new BorderLayout());
-		
+
 		mainWestPanel = new JPanel();
 		mainWestPanel.setLayout(new BorderLayout());
-		mainWestPanel.setPreferredSize(new Dimension(200,300));
+		mainWestPanel.setPreferredSize(new Dimension(200, 300));
 		mainWestPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
 		mainWestPanel.setBackground(new Color(206, 217, 228));
-		//mainWestPanel.setBackground(Color.RED);
-		
+		// mainWestPanel.setBackground(Color.RED);
+
 		mainSouthPanel = new JPanel();
 		mainSouthPanel.setLayout(new BorderLayout());
-		
+
 		mainNorthPanel = new JPanel();
 		mainNorthPanel.setLayout(new BorderLayout());
 		mainNorthPanel.setBorder(BorderFactory.createEtchedBorder());
-		
+
 		mainCentralPanel = new JPanel();
 		mainCentralPanel.setLayout(new BorderLayout());
-		
-		
+
 		carouselList = new JComboBox<>();
 		carouselList.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e)
 			{
-				if(e.getStateChange() == ItemEvent.SELECTED)
+				if (e.getStateChange() == ItemEvent.SELECTED)
 				{
 					CarouselContainer container = (CarouselContainer) e.getItem();
 					mainCentralPanel.removeAll();
 					mainCentralPanel.add(container.getCarousel());
 					mainCentralPanel.repaint();
 					mainCentralPanel.revalidate();
-					
+
 					mainWestPanel.removeAll();
 					mainWestPanel.add(container.getCarouselControlBox());
 					mainWestPanel.repaint();
@@ -130,18 +125,18 @@ public class Application extends JFrame
 					carouselList.setSelectedItem(container);
 				}
 			}
-			
+
 		});
 
-		carouselList.setPreferredSize(new Dimension(300,30));
-	
+		carouselList.setPreferredSize(new Dimension(300, 30));
+
 		Box northBox = Box.createHorizontalBox();
-		
+
 		northBox.add(new JLabel("Loaded Files: "));
 		northBox.add(Box.createHorizontalGlue());
 		northBox.add(carouselList);
 		mainNorthPanel.add(northBox, BorderLayout.WEST);
-		
+
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.add(mainWestPanel, JSplitPane.LEFT);
@@ -149,19 +144,19 @@ public class Application extends JFrame
 		mainPanel.add(mainSouthPanel, BorderLayout.SOUTH);
 		mainPanel.add(mainNorthPanel, BorderLayout.NORTH);
 		mainPanel.add(splitPane, BorderLayout.CENTER);
-		
+
 		updateArea = new JTextArea();
 		updateArea.setMaximumSize(new Dimension(updateArea.getMaximumSize().width, 80));
 		updateArea.setPreferredSize(new Dimension(updateArea.getMaximumSize().width, 80));
 		updateArea.setEditable(false);
-		
+
 		tabbedPane.add("Home", mainPanel);
 		tabbedPane.addTab("Repository", repoPanel);
 		tabbedPane.setTabPlacement(JTabbedPane.TOP);
 		this.add(tabbedPane, BorderLayout.CENTER);
 		JScrollPane scrollPane = new JScrollPane(updateArea);
 		this.add(scrollPane, BorderLayout.SOUTH);
-		
+
 		populateContext();
 	}
 
@@ -185,40 +180,40 @@ public class Application extends JFrame
 	{
 		Loader populator = new Loader(context);
 		xmlFileLoader.addQuestionFileLoadListener(populator);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		/*--------------------------------*/
-		/*Menus                           */
+		/* Menus */
 		/*--------------------------------*/
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-		
+
 		JMenu loadMenu = new JMenu("Load");
 		loadMenu.setMnemonic(KeyEvent.VK_L);
-		
+
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
-		
+
 		/*--------------------------------*/
-		/*Menu Items                      */
+		/* Menu Items */
 		/*--------------------------------*/
 		JMenuItem loadItem = new JMenuItem("Load Questions");
 		loadItem.setMnemonic(KeyEvent.VK_L);
-		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK ));
+		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		loadItem.addActionListener(xmlFileLoader);
-		
+
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
-		
-		JMenu optionsItem = new JMenu("Options") ;
-		
+
+		JMenu optionsItem = new JMenu("Options");
+
 		JMenu screenMenu = new JMenu("Screens");
 		welcomeScreen = new JCheckBoxMenuItem("Welcome Screen");
 		welcomeScreen.setSelected(false);
 		endScreen = new JCheckBoxMenuItem("End Screen");
 		endScreen.setSelected(false);
-		
+
 		ButtonGroup submitGroup = new ButtonGroup();
 		JMenu submitMode = new JMenu("Submit Mode");
 		singleSubmit = new JRadioButtonMenuItem("Single Submit");
@@ -226,32 +221,32 @@ public class Application extends JFrame
 		submitGroup.add(singleSubmit);
 		submitGroup.add(groupSubmit);
 		groupSubmit.setSelected(true);
-		
+
 		JMenu timeAttack = new JMenu("Time Attack Options");
 		JCheckBoxMenuItem timeAttackItem = new JCheckBoxMenuItem("Enabled");
 		timeAttackItem.setSelected(false);
 		timeAttack.add(timeAttackItem);
-		
+
 		JMenuItem aboutItem = new JMenuItem("About");
 		aboutItem.setMnemonic(KeyEvent.VK_A);
 		aboutItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e)
 			{
-				if(aboutDialog == null)
+				if (aboutDialog == null)
 				{
 					aboutDialog = new AboutDialog();
 				}
 				aboutDialog.setLocationRelativeTo(Application.this);
 				aboutDialog.setVisible(true);
-				
+
 			}
 		});
 		/*--------------------------------*/
-		
+
 		fileMenu.add(loadItem);
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
-			
+
 		loadMenu.add(optionsItem);
 		optionsItem.add(screenMenu);
 		screenMenu.add(welcomeScreen);
@@ -262,32 +257,27 @@ public class Application extends JFrame
 		optionsItem.add(submitMode);
 		optionsItem.addSeparator();
 		optionsItem.add(timeAttack);
-		
-		
+
 		helpMenu.add(aboutItem);
-		
+
 		menuBar.add(fileMenu);
 		menuBar.add(loadMenu);
 		menuBar.add(helpMenu);
-		
-		
+
 		setJMenuBar(menuBar);
-		
+
 	}
-	
+
 	public void layoutToolbar()
 	{
 		JToolBar toolbar = new JToolBar();
-		
+
 		JButton loadBtn = new JButton("Load");
 		toolbar.add(loadBtn);
-		
+
 		add(toolbar, BorderLayout.NORTH);
 	}
-	
-	
-	
-	
+
 	public static void main(String[] args)
 	{
 		SwingUtilities.invokeLater(new Runnable() {
@@ -296,10 +286,10 @@ public class Application extends JFrame
 			{
 				Application application = new Application();
 				application.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				
+
 				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 				Dimension size = application.getSize();
-				int y = (screenSize.height  - size.height) / 2;
+				int y = (screenSize.height - size.height) / 2;
 				int x = (screenSize.width - size.width) / 2;
 				application.setLocation(x, y);
 			}

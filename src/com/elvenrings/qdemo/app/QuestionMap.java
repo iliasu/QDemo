@@ -10,17 +10,17 @@ import com.elvenrings.qdemo.xml.ReadQuestions;
 public class QuestionMap implements QuestionFileLoadListener
 {
 	private Map<String, ReadQuestions> readQuestions = new HashMap<>();
-	
+
 	@Override
 	public void XMLFileLoaded(QuestionFileLoadEvent event)
 	{
 		ReadQuestions questions = event.getReadQuestions();
 		String name = event.getFileName();
-		
+
 		Integer hash = questions.hashCode();
 		String key = name + "-" + hash;
 		readQuestions.put(key, questions);
-		for(String q : readQuestions.keySet())
+		for (String q : readQuestions.keySet())
 		{
 			System.out.println(q);
 		}

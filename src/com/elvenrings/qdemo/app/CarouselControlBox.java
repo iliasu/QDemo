@@ -51,13 +51,10 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private JButton groupSubmitButton;
 	private JLabel resultLabel;
 	private JLabel attemptLabel;
-	private JLabel statusLabel;
 	private GroupGraderListener groupListener;
 	private SubmitSwingListener singleListener;
 	private boolean groupSubmit = true;
 	private Tally tally = new Tally();
-	// private final static Color CORRECT = new Color(53, 205, 75);
-	// private final static Color WRONG = new Color(252, 98, 93);
 	private static Icon correctIcon = new ImageIcon("images/icon_correct.png");
 	private static Icon wrongIcon = new ImageIcon("images/icon_wrong.png");
 
@@ -194,8 +191,8 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 			for (SwingRenderer renderer : rendererList)
 			{
 
-					renderer.addSubmitListener(singleListener);
-					renderer.getMessageLabel().setText("Attempts Remaining: " + renderer.getQuestion().getAttempts());
+				renderer.addSubmitListener(singleListener);
+				renderer.getMessageLabel().setText("Attempts Remaining: " + renderer.getQuestion().getAttempts());
 			}
 		}
 	}

@@ -21,14 +21,16 @@ public abstract class Question
 	private Integer sequence1 = 0;
 	private Integer sequence2 = 0;
 	private Integer attempts = 0;
-	
+
 	protected Question()
 	{
 	}
 
 	/**
-	 * Adds a text <code>String</code> to the  <code>Preamble</code> list.
-	 * @param text Preamble text.
+	 * Adds a text <code>String</code> to the <code>Preamble</code> list.
+	 * 
+	 * @param text
+	 *            Preamble text.
 	 */
 	public void addPreambleText(String text)
 	{
@@ -37,7 +39,9 @@ public abstract class Question
 
 	/**
 	 * Adds binary data to the <code>Preamble</code> list.
-	 * @param data Preamble data.
+	 * 
+	 * @param data
+	 *            Preamble data.
 	 */
 	public void addPreambleData(byte[] data)
 	{
@@ -46,7 +50,9 @@ public abstract class Question
 
 	/**
 	 * Adds a text <code>String</code> to the <code>Body</code> list.
-	 * @param text Body text.
+	 * 
+	 * @param text
+	 *            Body text.
 	 */
 	public void addBodyText(String text)
 	{
@@ -55,7 +61,9 @@ public abstract class Question
 
 	/**
 	 * Adds binary data to the <code>Body</code> list.
-	 * @param data Body binary data.
+	 * 
+	 * @param data
+	 *            Body binary data.
 	 */
 	public void addBodyData(byte[] data)
 	{
@@ -66,12 +74,12 @@ public abstract class Question
 	{
 		return attempts;
 	}
-	
+
 	public void setAttempts(Integer attempts)
 	{
 		this.attempts = attempts;
 	}
-	
+
 	private void addText(Part fragment, Integer sequence, String text)
 	{
 		fragment.addText(sequence, text);
@@ -86,6 +94,6 @@ public abstract class Question
 		}
 		fragment.addData(sequence, d);
 	}
-	
+
 	public abstract Choice getChoice();
 }

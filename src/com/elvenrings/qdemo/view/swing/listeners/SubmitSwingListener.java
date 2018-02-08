@@ -1,5 +1,7 @@
 package com.elvenrings.qdemo.view.swing.listeners;
 
+import java.util.EventListener;
+
 import com.elvenrings.qdemo.view.events.swing.FillBlankSwingEvent;
 import com.elvenrings.qdemo.view.events.swing.MultipleChoiceSwingSelectionEvent;
 import com.elvenrings.qdemo.view.events.swing.SingleChoiceSwingSelectionEvent;
@@ -12,7 +14,7 @@ import com.elvenrings.qdemo.view.events.swing.SingleChoiceSwingSelectionEvent;
  * @author iliasu@elvenrings.com
  * @since 1.0
  */
-public interface SubmitSwingListener
+public interface SubmitSwingListener extends EventListener
 {
 	/**
 	 * Callback for when a Fill-In-The-Blank is answered from a Swing Component

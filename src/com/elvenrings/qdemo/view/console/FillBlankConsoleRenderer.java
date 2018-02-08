@@ -84,9 +84,10 @@ public class FillBlankConsoleRenderer extends DefaultConsoleRenderer
 
 	private void fireBlankFilledEvent(FillBlankConsoleEvent event)
 	{
-		for (SubmitConsoleListener listener : listeners)
+		SubmitConsoleListener[] consoleListeners = listeners.getListeners(SubmitConsoleListener.class);
+		for(int i=0; i< consoleListeners.length; i++)
 		{
-			listener.fillBlankConsoleEventOccurred(event);
+			consoleListeners[i].fillBlankConsoleEventOccurred(event);
 		}
 	}
 

@@ -15,9 +15,9 @@ import com.elvenrings.qdemo.interfaces.Questionable;
  */
 public class SingleChoiceQuestion extends Question implements Questionable
 {
-	
+
 	private SingleChoice singleChoice;
-	
+
 	/**
 	 * Default Constructor instantiates an object of this class with empty preamble
 	 * and body parts and an empty <code>SingleChoice</code>.
@@ -28,7 +28,7 @@ public class SingleChoiceQuestion extends Question implements Questionable
 		body = new Body();
 		singleChoice = new SingleChoice();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public Preamble getPreamble()

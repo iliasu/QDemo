@@ -111,9 +111,10 @@ public class MultipleChoiceConsoleRenderer extends DefaultConsoleRenderer
 
 	private void fireMultipleChoiceEvent(MultipleChoiceConsoleSelectionEvent event)
 	{
-		for (SubmitConsoleListener listener : listeners)
+		SubmitConsoleListener[] consoleListeners = listeners.getListeners(SubmitConsoleListener.class);
+		for(int i=0; i< consoleListeners.length; i++)
 		{
-			listener.multipleChoiceConsoleEventOccurred(event);
+			consoleListeners[i].multipleChoiceConsoleEventOccurred(event);
 		}
 	}
 

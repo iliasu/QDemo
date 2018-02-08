@@ -4,9 +4,10 @@ import com.elvenrings.qdemo.interfaces.Choice;
 import com.elvenrings.qdemo.interfaces.Questionable;
 
 /**
- * A <code>Question</code> implementation class which accepts a string or series of strings as
- * possible answers for the question it poses. In more technical terms this means
- * that its encapsulated <code>Choice</code> member variable is of type <code>FillBlank</code>
+ * A <code>Question</code> implementation class which accepts a string or series
+ * of strings as possible answers for the question it poses. In more technical
+ * terms this means that its encapsulated <code>Choice</code> member variable is
+ * of type <code>FillBlank</code>
  * 
  * @author Iliasu Salifu
  * @author iliasu@elvenrings.com

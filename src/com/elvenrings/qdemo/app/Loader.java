@@ -1,7 +1,5 @@
 package com.elvenrings.qdemo.app;
 
-import java.util.Date;
-
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -40,7 +38,6 @@ public class Loader implements QuestionFileLoadListener
 		JRadioButtonMenuItem singleSubmit = (JRadioButtonMenuItem) context.get("singleSubmit");
 		JRadioButtonMenuItem groupSubmit = (JRadioButtonMenuItem) context.get("groupSubmit");
 		JComboBox<CarouselContainer> combobox = (JComboBox<CarouselContainer>) context.get("carouselList");
-		// JPanel mainWestPanel = (JPanel) context.get("mainwestpanel");
 		JTextArea updateArea = (JTextArea) context.get("updateArea");
 
 		if (!welcomeScreen.isSelected())
@@ -63,10 +60,10 @@ public class Loader implements QuestionFileLoadListener
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
 			GroupGrader groupGrader = new GroupGrader();
 			groupGrader.addGroupGraderResultListener(controlBox);
-			
+
 			SingleGrader singleGrader = new SingleGrader();
 			singleGrader.addSingleGraderResultListener(controlBox);
-			
+
 			if (groupSubmit.isSelected())
 			{
 				controlBox.setGraderListener(groupGrader);
@@ -74,10 +71,6 @@ public class Loader implements QuestionFileLoadListener
 			{
 				controlBox.setSingleGraderListener(singleGrader);
 			}
-			/*
-			 * mainWestPanel.removeAll(); mainWestPanel.add(controlBox);
-			 * mainWestPanel.repaint(); mainWestPanel.revalidate();
-			 */
 
 			combobox.addItem(container);
 			combobox.setSelectedItem(container);

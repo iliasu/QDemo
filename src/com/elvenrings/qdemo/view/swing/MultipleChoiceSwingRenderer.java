@@ -40,7 +40,7 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 	private Set<Integer> chosenInput = null;
 	private JCheckBox[] checkBoxes;
 	private JLabel colorStatusLabel = null;
-	//QPanel mainPanel;
+	// QPanel mainPanel;
 
 	/**
 	 * Single Parameter constructor accepts a <code>MultipleChoiceQuestion</code> as
@@ -58,7 +58,7 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 			{
 				Choice choice = MultipleChoiceSwingRenderer.this.question.getChoice();
 				MultipleChoiceSwingRenderer.this.getInput();
-				
+
 				MultipleChoiceSwingSelectionEvent mce = new MultipleChoiceSwingSelectionEvent(
 						MultipleChoiceSwingRenderer.this, MultipleChoiceSwingRenderer.this.chosenInput, choice);
 				fireMultipleChoiceEvent(mce);
@@ -68,9 +68,10 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 
 	private void fireMultipleChoiceEvent(MultipleChoiceSwingSelectionEvent event)
 	{
-		for (SubmitSwingListener l : listeners)
+		SubmitSwingListener[] swingListeners = listeners.getListeners(SubmitSwingListener.class);
+		for (int i = 0; i < swingListeners.length; i++)
 		{
-			l.multipleChoiceSwingEventOccurred(event);
+			swingListeners[i].multipleChoiceSwingEventOccurred(event);
 		}
 	}
 
@@ -84,28 +85,27 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 	public QPanel render()
 	{
 		mainPanel = super.render();
-		//questionPanel.setBackground(Color.WHITE);
+		// questionPanel.setBackground(Color.WHITE);
 		mainPanel.questionPanel.setBackground(Color.BLACK);
 		mainPanel.setLayout(new BorderLayout());
-		
+
 		mainPanel.setOpaque(true);
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setForeground(Color.BLACK);
-		
-		mainPanel.add(mainPanel.tabbedPane,BorderLayout.CENTER);
-		
+
+		mainPanel.add(mainPanel.tabbedPane, BorderLayout.CENTER);
+
 		Box box = layoutOptions();
-		mainPanel.add(box,BorderLayout.SOUTH);
-		
-		
+		mainPanel.add(box, BorderLayout.SOUTH);
+
 		Border outsideBorder = BorderFactory.createEmptyBorder(5, 5, 5, 5);
 		Border insideBorder = BorderFactory.createEtchedBorder();
 
 		Border border = BorderFactory.createCompoundBorder(outsideBorder, insideBorder);
-		
+
 		mainPanel.setBorder(border);
 		return mainPanel;
-		
+
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 		List<String> optionList = question.getChoice().getOptionList();
 		int optionCount = optionList.size();
 		checkBoxes = new JCheckBox[optionCount];
-	
+
 		Box box = Box.createVerticalBox();
 		box.setOpaque(true);
 		box.setBackground(BOXCOLOR);
@@ -148,53 +148,53 @@ public class MultipleChoiceSwingRenderer extends DefaultSwingRenderer
 			checkBoxes[i].setAlignmentX(Component.LEFT_ALIGNMENT);
 			box.add(checkBoxes[i]);
 		}
-		
+
 		box.add(Box.createVerticalStrut(5));
-		//submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+		// submitButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 		Box box2 = Box.createHorizontalBox();
 		setupColorStatusLabel();
-		
+
 		box2.add(submitButton);
 		box2.add(Box.createHorizontalGlue());
 		box2.add(colorStatusLabel);
 		box2.setAlignmentX(Component.LEFT_ALIGNMENT);
-		
+
 		box.add(box2);
-		//box.add(submitButton);
+		// box.add(submitButton);
 		messageLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		box.add(messageLabel);
 		return box;
 	}
-	
+
 	private void setupColorStatusLabel()
 	{
 		colorStatusLabel = new JLabel("");
 		colorStatusLabel.setOpaque(true);
-		colorStatusLabel.setPreferredSize(new Dimension(26,26));
-		colorStatusLabel.setMaximumSize(new Dimension(26,26));
+		colorStatusLabel.setPreferredSize(new Dimension(26, 26));
+		colorStatusLabel.setMaximumSize(new Dimension(26, 26));
 		colorStatusLabel.setBackground(BOXCOLOR);
 	}
-	
+
 	public JLabel getColorStatusLabel()
 	{
 		return this.colorStatusLabel;
 	}
-	
+
 	@Override
 	public Question getQuestion()
 	{
 		return (MultipleChoiceQuestion) question;
 	}
-	
+
 	public JCheckBox[] getCheckBoxes()
 	{
 		return checkBoxes;
 	}
-	
+
 	@Override
 	public JComponent[] getInputComponent()
 	{
-		return  checkBoxes;
+		return checkBoxes;
 	}
 }

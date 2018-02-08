@@ -4,11 +4,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.event.EventListenerList;
 import javax.swing.filechooser.FileFilter;
 
 import org.xml.sax.SAXException;
@@ -19,24 +18,25 @@ import com.elvenrings.qdemo.xml.ReadQuestions;
 
 public class XMLFileLoader implements ActionListener
 {
-	private List<QuestionFileLoadListener> listeners = new ArrayList<>();
+	private EventListenerList listeners = new EventListenerList();
 	private File lastFile;
 
 	public void addQuestionFileLoadListener(QuestionFileLoadListener listener)
 	{
-		listeners.add(listener);
+		listeners.add(QuestionFileLoadListener.class, listener);
 	}
 
 	public void removeQuestionFileLoadListener(QuestionFileLoadListener listener)
 	{
-		listeners.remove(listener);
+		listeners.remove(QuestionFileLoadListener.class, listener);
 	}
 
 	public void fireFileLoadEvent(QuestionFileLoadEvent event)
 	{
-		for (QuestionFileLoadListener listener : listeners)
+		QuestionFileLoadListener[] questionFileLoadListeners = listeners.getListeners(QuestionFileLoadListener.class);
+		for (int i = 0; i < questionFileLoadListeners.length; i++)
 		{
-			listener.XMLFileLoaded(event);
+			questionFileLoadListeners[i].XMLFileLoaded(event);
 		}
 	}
 

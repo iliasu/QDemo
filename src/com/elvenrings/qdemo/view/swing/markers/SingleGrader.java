@@ -1,9 +1,9 @@
 package com.elvenrings.qdemo.view.swing.markers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import javax.swing.event.EventListenerList;
 
 import com.elvenrings.qdemo.model.FillBlankQuestion;
 import com.elvenrings.qdemo.model.MultipleChoiceQuestion;
@@ -22,7 +22,7 @@ public class SingleGrader implements SubmitSwingListener
 	private SingleChoiceMarker singleChoiceMarker = new SingleChoiceMarker();
 	private MultipleChoiceMarker multiChoiceMarker = new MultipleChoiceMarker();
 
-	private List<SingleGraderResultListener> listeners = new ArrayList<>();
+	private EventListenerList listeners = new EventListenerList();
 	private Map<Question, Integer> map = new HashMap<>();
 
 	@Override
@@ -92,19 +92,20 @@ public class SingleGrader implements SubmitSwingListener
 
 	public void addSingleGraderResultListener(SingleGraderResultListener listener)
 	{
-		listeners.add(listener);
+		listeners.add(SingleGraderResultListener.class, listener);
 	}
 	
 	public void removeSingleGraderResultListener(SingleGraderResultListener listener)
 	{
-		listeners.remove(listener);
+		listeners.remove(SingleGraderResultListener.class, listener);
 	}
 	
 	private void fireSingleGradeResultEvent(SingleGradeResultEvent event)
 	{
-		for(SingleGraderResultListener listener : listeners)
+		SingleGraderResultListener[] resultListeners = listeners.getListeners(SingleGraderResultListener.class);
+		for(int i=0; i<resultListeners.length; i++)
 		{
-			listener.gradingActivityCompleted(event);
+			resultListeners[i].gradingActivityCompleted(event);
 		}
 	}
 }

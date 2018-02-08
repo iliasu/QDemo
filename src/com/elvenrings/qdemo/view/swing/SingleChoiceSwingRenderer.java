@@ -18,7 +18,6 @@ import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
 import com.elvenrings.qdemo.interfaces.Choice;
-import com.elvenrings.qdemo.model.MultipleChoiceQuestion;
 import com.elvenrings.qdemo.model.Question;
 import com.elvenrings.qdemo.model.SingleChoiceQuestion;
 import com.elvenrings.qdemo.view.events.swing.SingleChoiceSwingSelectionEvent;
@@ -68,9 +67,10 @@ public class SingleChoiceSwingRenderer extends DefaultSwingRenderer
 
 	private void fireSingleChoiceEvent(SingleChoiceSwingSelectionEvent event)
 	{
-		for (SubmitSwingListener l : listeners)
+		SubmitSwingListener[] swingListeners = listeners.getListeners(SubmitSwingListener.class);
+		for(int i=0; i< swingListeners.length; i++)
 		{
-			l.singleChoiceSwingEventOccurred(event);
+			swingListeners[i].singleChoiceSwingEventOccurred(event);
 		}
 	}
 

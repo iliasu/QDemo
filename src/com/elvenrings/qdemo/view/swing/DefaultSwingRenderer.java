@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -13,6 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
+import javax.swing.event.EventListenerList;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
@@ -40,10 +39,10 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 	protected JButton submitButton;
 	protected JLabel messageLabel = new JLabel();
 	protected JTabbedPane tabbedPlate = new JTabbedPane();
-	protected List<SubmitSwingListener> listeners = new ArrayList<SubmitSwingListener>();
+	protected EventListenerList listeners = new EventListenerList();
 	private QPanel panel = null;
 	protected QPanel mainPanel;
-	protected static final Color BOXCOLOR = new Color(234,234,234);
+	protected static final Color BOXCOLOR = new Color(234, 234, 234);
 
 	/**
 	 * Registers a <code>SubmitSwingListener</code> with this Renderer.
@@ -53,7 +52,7 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 	 */
 	public void addSubmitListener(SubmitSwingListener listener)
 	{
-		listeners.add(listener);
+		listeners.add(SubmitSwingListener.class, listener);
 	}
 
 	/**
@@ -65,7 +64,7 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 	 */
 	public void removeSubmitListener(SubmitSwingListener listener)
 	{
-		listeners.remove(listener);
+		listeners.remove(SubmitSwingListener.class, listener);
 	}
 
 	/**
@@ -80,14 +79,13 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 		panel = new QPanel();
 		panel.questionPanel.setLayout(new BorderLayout());
 		panel.solutionPanel.setLayout(new BorderLayout());
-		//panel.setLayout(new BorderLayout());
+		// panel.setLayout(new BorderLayout());
 
 		JTextPane textPane = new JTextPane();
 		StyledDocument document = textPane.getStyledDocument();
 		Style def = textPane.getStyledDocument().getStyle(StyleContext.DEFAULT_STYLE);
 		Style style = document.addStyle("regular", def);
 		StyleConstants.setFontFamily(style, "SansSerif");
-
 
 		Dimension dm = new Dimension(300, 185);
 		textPane.setMaximumSize(dm);
@@ -98,7 +96,7 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 		JScrollPane scrollPane = new JScrollPane(textPane);
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		panel.questionPanel.add(scrollPane, BorderLayout.CENTER);
 
 		Preamble preamble = question.getPreamble();
@@ -134,11 +132,9 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 			}
 			sb.append(str);
 		}
-		
+
 		return panel;
 	}
-
-	
 
 	public JLabel getMessageLabel()
 	{
@@ -149,12 +145,12 @@ public abstract class DefaultSwingRenderer extends AbstractRenderer implements S
 	{
 		return this.submitButton;
 	}
-	
+
 	public QPanel getMainPanel()
 	{
 		return this.mainPanel;
 	}
-	
+
 	public JComponent[] getInputComponent()
 	{
 		return null;

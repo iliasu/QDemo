@@ -21,7 +21,7 @@ public class ApplicationContext implements Cloneable
 		if (applicationContext == null)
 		{
 			synchronized (ApplicationContext.class)
-			{	//double checked locking
+			{ // double checked locking
 				if (applicationContext == null)
 				{
 					map = new HashMap<>();

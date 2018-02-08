@@ -1,5 +1,7 @@
 package com.elvenrings.qdemo.view.swing.listeners;
 
+import java.util.EventListener;
+
 import com.elvenrings.qdemo.view.events.console.FillBlankConsoleEvent;
 import com.elvenrings.qdemo.view.events.console.MultipleChoiceConsoleSelectionEvent;
 import com.elvenrings.qdemo.view.events.console.SingleChoiceConsoleSelectionEvent;
@@ -12,7 +14,7 @@ import com.elvenrings.qdemo.view.events.console.SingleChoiceConsoleSelectionEven
  * @author iliasu@elvenrings.com
  * @since 1.0
  */
-public interface SubmitConsoleListener
+public interface SubmitConsoleListener extends EventListener
 {
 	/**
 	 * Callback for when a Fill-In-The-Blank is answered from the console.

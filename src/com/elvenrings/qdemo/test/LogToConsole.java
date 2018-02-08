@@ -40,7 +40,7 @@ public class LogToConsole implements SubmitSwingListener
 	public void fillBlankSwingEventOccurred(FillBlankSwingEvent event)
 	{
 		FillBlankSwingRenderer renderer = event.getRenderer();
-		FillBlankQuestion question = renderer.getQuestion();
+		FillBlankQuestion question = (FillBlankQuestion) renderer.getQuestion();
 		
 		StringJoiner sj = new StringJoiner(":");
 
@@ -74,7 +74,7 @@ public class LogToConsole implements SubmitSwingListener
 	public void singleChoiceSwingEventOccurred(SingleChoiceSwingSelectionEvent event)
 	{
 		SingleChoiceSwingRenderer renderer = event.getRenderer();
-		SingleChoiceQuestion question = renderer.getQuestion();
+		SingleChoiceQuestion question = (SingleChoiceQuestion) renderer.getQuestion();
 		
 		if (new SingleChoiceMarker().isCorrect(event))
 		{
@@ -105,7 +105,7 @@ public class LogToConsole implements SubmitSwingListener
 	public void multipleChoiceSwingEventOccurred(MultipleChoiceSwingSelectionEvent event)
 	{
 		MultipleChoiceSwingRenderer renderer = event.getRenderer();
-		MultipleChoiceQuestion question = renderer.getQuestion();
+		MultipleChoiceQuestion question = (MultipleChoiceQuestion) renderer.getQuestion();
 		
 		if (new MultipleChoiceMarker().isCorrect(event))
 		{

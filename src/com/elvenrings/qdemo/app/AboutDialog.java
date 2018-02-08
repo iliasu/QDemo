@@ -20,16 +20,16 @@ public class AboutDialog extends JDialog
 
 	public AboutDialog()
 	{
-		setSize(new Dimension(300,200));
+		setSize(new Dimension(300, 200));
 		setResizable(false);
 		setLayout(new BorderLayout());
 		setModal(true);
-		
+
 		JPanel aboutPanel = new JPanel();
 		aboutPanel.setBackground(new Color(206, 217, 228));
 		aboutPanel.setLayout(new BorderLayout());
 		aboutPanel.add(new JLabel("QDemo Study Aid", SwingConstants.CENTER), BorderLayout.CENTER);
-		
+
 		Box box = Box.createVerticalBox();
 		box.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
 		JLabel l1 = new JLabel("© 2018 Elven Rings Ltd");
@@ -38,7 +38,7 @@ public class AboutDialog extends JDialog
 		l2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		box.add(l1);
 		box.add(l2);
-		
+
 		aboutPanel.add(box, BorderLayout.SOUTH);
 		add(aboutPanel, BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
@@ -47,7 +47,7 @@ public class AboutDialog extends JDialog
 			{
 				dispose();
 			}
-			
+
 		});
 	}
 }

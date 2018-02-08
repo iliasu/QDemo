@@ -8,7 +8,7 @@ public class TrackerException extends Exception
 	{
 		super("Boundary reached");
 	}
-	
+
 	public TrackerException(String message)
 	{
 		super(message);
