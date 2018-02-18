@@ -77,6 +77,7 @@ public class ExamActivity extends Activity implements ExamStateContext, Question
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
 			GroupGrader groupGrader = new GroupGrader();
 			groupGrader.addGroupGraderResultListener(controlBox);
+			
 			JButton startButton = controlBox.getStartButton();
 			startButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e)

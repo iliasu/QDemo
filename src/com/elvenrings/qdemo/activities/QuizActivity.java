@@ -1,12 +1,12 @@
 package com.elvenrings.qdemo.activities;
 
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextArea;
 
+import com.elvenrings.qdemo.activities.states.QuizState;
+import com.elvenrings.qdemo.activities.states.QuizStateContext;
 import com.elvenrings.qdemo.app.ApplicationContext;
 import com.elvenrings.qdemo.app.CarouselContainer;
 import com.elvenrings.qdemo.app.CarouselControlBox;
@@ -18,12 +18,13 @@ import com.elvenrings.qdemo.view.swing.listeners.QuestionFileLoadListener;
 import com.elvenrings.qdemo.view.swing.markers.SingleGrader;
 import com.elvenrings.qdemo.xml.ReadQuestions;
 
-public class QuizActivity extends Activity implements QuestionFileLoadListener
+public class QuizActivity extends Activity implements QuizStateContext, QuestionFileLoadListener
 {
 	private ApplicationContext context;
 	private static volatile int sequence = 0;
-	
-	
+	private QuizMediator mediator;
+	private QuizState quizState;
+
 	public QuizActivity(ApplicationContext context)
 	{
 		this.context = context;
@@ -35,8 +36,8 @@ public class QuizActivity extends Activity implements QuestionFileLoadListener
 	{
 		context = ApplicationContext.getInstance();
 		OptionsDialog optionsDialog = (OptionsDialog) context.get("optionsDialog");
-		
-		if(!optionsDialog.isQuizMode())
+
+		if (!optionsDialog.isQuizMode())
 		{
 			return;
 		}
@@ -61,24 +62,15 @@ public class QuizActivity extends Activity implements QuestionFileLoadListener
 		try
 		{
 			ReadQuestions readQuestions = event.getReadQuestions();
-			String name = "Quiz Mode |" + readQuestions.questionSetName + "[" + sequence++ +"]"; 
+			String name = "Quiz Mode |" + readQuestions.questionSetName + "[" + sequence++ + "]";
 			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel, true);
 
 			CarouselControlBox controlBox = new CarouselControlBox(carousel, false);
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
-			//GroupGrader groupGrader = new GroupGrader();
-			//groupGrader.addGroupGraderResultListener(controlBox);
+			SingleGrader singleGrader = new SingleGrader();
+			singleGrader.addSingleGraderResultListener(controlBox);
 
-			 SingleGrader singleGrader = new SingleGrader();
-			 singleGrader.addSingleGraderResultListener(controlBox);
-
-			// if (groupSubmit.isSelected())
-			// {
-			//controlBox.setGraderListener(groupGrader);
-			// } else
-			// {
-			 controlBox.setSingleGraderListener(singleGrader);
-			// }
+			controlBox.setSingleGraderListener(singleGrader);
 
 			combobox.addItem(container);
 			combobox.setSelectedItem(container);
@@ -93,6 +85,28 @@ public class QuizActivity extends Activity implements QuestionFileLoadListener
 
 		updateArea.repaint();
 		updateArea.revalidate();
+	}
+
+	@Override
+	public QuizMediator getQuizMediator()
+	{
+		return mediator;
+	}
+
+	@Override
+	public void setState(QuizState state)
+	{
+		this.quizState = state;
+	}
+
+	public QuizState getQuizState()
+	{
+		return quizState;
+	}
+
+	public void setQuizState(QuizState quizState)
+	{
+		this.quizState = quizState;
 	}
 
 }
