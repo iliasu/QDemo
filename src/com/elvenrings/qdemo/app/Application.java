@@ -13,7 +13,6 @@ import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
@@ -56,7 +55,6 @@ public class Application extends JFrame
 	private JRadioButtonMenuItem singleSubmit;
 	private JRadioButtonMenuItem groupSubmit;
 	private AboutDialog aboutDialog;
-	private JCheckBoxMenuItem timeAttackItem;
 	private OptionsDialog optionsDialog;
 	
 	private static final long serialVersionUID = 1L;
