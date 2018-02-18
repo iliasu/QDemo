@@ -31,16 +31,23 @@ public class DefaultCarousel extends JPanel
 	private JPanel buttonPanel = new JPanel();
 	private Tracker tracker;
 	private ReadQuestions readQuestions;
-	List<Question> questions;
+	private List<Question> questions;
 	private CardLayout cardManager;
-	InternalMediator mediator = new InternalMediator();
-	List<SwingRenderer> rendererList = new ArrayList<>();
+	private CarouselMediator mediator = new CarouselMediator();
+	private List<SwingRenderer> rendererList = new ArrayList<>();
 	private int count = 0;
 	private boolean submitImmediate = true;
 	private String name;
 	
-	public NextButton nextButton;
+	private NextButton nextButton;
+	private PrevButton prevButton;
+	private FirstButton firstButton;
+	private LastButton lastButton;
 
+	public FirstButton getFirstButton()
+	{
+		return firstButton;
+	}
 	public DefaultCarousel(String name, ReadQuestions readQuestions, JPanel firstPanel, JPanel lastPanel,
 			boolean submitImmediate) throws TrackerException
 	{
@@ -75,9 +82,9 @@ public class DefaultCarousel extends JPanel
 		tracker.init(1, count, 1);
 
 		nextButton = new NextButton(">", mediator);
-		PrevButton prevButton = new PrevButton("<", mediator);
-		FirstButton firstButton = new FirstButton("<<", mediator);
-		LastButton lastButton = new LastButton(">>", mediator);
+		prevButton = new PrevButton("<", mediator);
+		firstButton = new FirstButton("<<", mediator);
+		lastButton = new LastButton(">>", mediator);
 
 		Box box = Box.createHorizontalBox();
 		box.add(firstButton);
@@ -100,6 +107,15 @@ public class DefaultCarousel extends JPanel
 		return name;
 	}
 
+	public List<SwingRenderer> getRendererList()
+	{
+		return rendererList;
+	}
+	
+	public CarouselMediator getMediator()
+	{
+		return mediator;
+	}
 	protected void createQuestionPanels()
 	{
 		SingleChoiceSwingRenderer scsr = null;
@@ -117,10 +133,10 @@ public class DefaultCarousel extends JPanel
 				JButton submitButton = scsr.getSubmitButton();
 				if (submitImmediate)
 				{
-					submitButton.setEnabled(true);
+					submitButton.setVisible(true);
 				} else
 				{
-					submitButton.setEnabled(false);
+					submitButton.setVisible(false);
 				}
 
 			}
@@ -133,10 +149,10 @@ public class DefaultCarousel extends JPanel
 				JButton submitButton = mcsr.getSubmitButton();
 				if (submitImmediate)
 				{
-					submitButton.setEnabled(true);
+					submitButton.setVisible(true);
 				} else
 				{
-					submitButton.setEnabled(false);
+					submitButton.setVisible(false);
 				}
 			}
 			if (q instanceof FillBlankQuestion)
@@ -148,16 +164,16 @@ public class DefaultCarousel extends JPanel
 				JButton submitButton = fbsr.getSubmitButton();
 				if (submitImmediate)
 				{
-					submitButton.setEnabled(true);
+					submitButton.setVisible(true);
 				} else
 				{
-					submitButton.setEnabled(false);
+					submitButton.setVisible(false);
 				}
 			}
 		}
 	}
 
-	protected class InternalMediator
+	public class CarouselMediator
 	{
 		private NextButton nextButton;
 		private PrevButton prevButton;
@@ -184,7 +200,13 @@ public class DefaultCarousel extends JPanel
 			this.lastButton = lastButton;
 		}
 
-		
+		public void disableAll()
+		{
+			nextButton.setEnabled(false);
+			lastButton.setEnabled(false);
+			prevButton.setEnabled(false);
+			firstButton.setEnabled(false);
+		}
 		public void init() throws TrackerException
 		{
 			if (tracker.hasNext())
@@ -209,7 +231,7 @@ public class DefaultCarousel extends JPanel
 
 		}
 		
-		void next() throws TrackerException
+		private void next() throws TrackerException
 		{
 			tracker.next();
 			if (tracker.hasNext())
@@ -234,7 +256,7 @@ public class DefaultCarousel extends JPanel
 
 		}
 
-		void prev() throws TrackerException
+		private void prev() throws TrackerException
 		{
 			tracker.prev();
 			if (tracker.hasNext())
@@ -258,7 +280,7 @@ public class DefaultCarousel extends JPanel
 			}
 		}
 
-		void first() throws TrackerException
+		private void first() throws TrackerException
 		{
 			tracker.moveToFirst();
 			firstButton.setEnabled(false);
@@ -270,7 +292,7 @@ public class DefaultCarousel extends JPanel
 			}
 		}
 
-		void last() throws TrackerException
+		private void last() throws TrackerException
 		{
 			tracker.moveToLast();
 			lastButton.setEnabled(false);
@@ -283,12 +305,12 @@ public class DefaultCarousel extends JPanel
 		}
 	}
 
-	protected class NextButton extends JButton
+	public class NextButton extends JButton
 	{
 		private static final long serialVersionUID = 1L;
-		InternalMediator med;
+		CarouselMediator med;
 
-		NextButton(String label, InternalMediator med)
+		NextButton(String label, CarouselMediator med)
 		{
 			this.setText(label);
 			this.med = med;
@@ -311,12 +333,12 @@ public class DefaultCarousel extends JPanel
 		}
 	}
 
-	protected class PrevButton extends JButton
+	public class PrevButton extends JButton
 	{
 		private static final long serialVersionUID = 1L;
-		InternalMediator med;
+		CarouselMediator med;
 
-		PrevButton(String label, InternalMediator med)
+		PrevButton(String label, CarouselMediator med)
 		{
 			this.setText(label);
 			this.med = med;
@@ -339,12 +361,12 @@ public class DefaultCarousel extends JPanel
 		}
 	}
 
-	protected class FirstButton extends JButton
+	public class FirstButton extends JButton
 	{
 		private static final long serialVersionUID = 1L;
-		InternalMediator med;
+		CarouselMediator med;
 
-		FirstButton(String label, InternalMediator med)
+		FirstButton(String label, CarouselMediator med)
 		{
 			this.setText(label);
 			this.med = med;
@@ -367,12 +389,12 @@ public class DefaultCarousel extends JPanel
 		}
 	}
 
-	protected class LastButton extends JButton
+	public class LastButton extends JButton
 	{
 		private static final long serialVersionUID = 1L;
-		InternalMediator med;
+		CarouselMediator med;
 
-		LastButton(String label, InternalMediator med)
+		LastButton(String label, CarouselMediator med)
 		{
 			this.setText(label);
 			this.med = med;

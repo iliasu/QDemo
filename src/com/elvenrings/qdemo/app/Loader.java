@@ -24,7 +24,6 @@ public class Loader implements QuestionFileLoadListener
 	}
 
 	@SuppressWarnings({ "static-access", "unchecked" })
-	@Override
 	public void XMLFileLoaded(QuestionFileLoadEvent event)
 	{
 		ApplicationContext context = ApplicationContext.getInstance();

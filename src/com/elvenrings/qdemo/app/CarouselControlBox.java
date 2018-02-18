@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -49,8 +50,12 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 
 	private DefaultCarousel carousel;
 	private JButton groupSubmitButton;
+	private JButton startButton;
 	private JLabel resultLabel;
 	private JLabel attemptLabel;
+	private JLabel countDownLabel;
+
+
 	private GroupGraderListener groupListener;
 	private SubmitSwingListener singleListener;
 	private boolean groupSubmit = true;
@@ -62,94 +67,97 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	{
 		this.carousel = carousel;
 		this.groupSubmit = groupSubmit;
-
+		this.startButton = new JButton("Start");
 		setupResultLabel();
 		setupAttemptLabel();
+		setupCountDownLabel();
 		setupGroupSubmitButton(groupSubmit);
 
 		this.setLayout(new BorderLayout());
 		this.add(resultLabel, BorderLayout.NORTH);
 		this.add(attemptLabel, BorderLayout.CENTER);
-		this.add(groupSubmitButton, BorderLayout.SOUTH);
+		JPanel panel = new JPanel();
+		panel.setLayout(new GridLayout(3,1));
+		panel.add(countDownLabel);
+		panel.add(startButton);
+		panel.add(groupSubmitButton);
+		this.add(panel, BorderLayout.SOUTH);
 
 	}
 
+	public JButton getStartButton()
+	{
+		return startButton;
+	}
+	public JButton getGroupSubmitButton()
+	{
+		return groupSubmitButton;
+	}
 	private void setupGroupSubmitButton(boolean groupSubmit)
 	{
-		this.groupSubmitButton = new JButton("Submit all");
+		this.groupSubmitButton = new JButton("Submit Exam");
 		this.groupSubmitButton.setEnabled(groupSubmit);
-		if (groupSubmit)
+		
+	}
+
+	public void submitExam()
+	{
+		System.out.println("Sending grading event");
+		// GroupGradeEvent event = new GroupGradeEvent();
+		Map<Question, Event> eventMap = new HashMap<>();
+
+		for (SwingRenderer renderer : carousel.getRendererList())
 		{
-			this.groupSubmitButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e)
+			if (renderer instanceof FillBlankSwingRenderer)
+			{
+				FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
+				List<String> input = fbsr.getInput();
+				Choice choice = fbsr.getQuestion().getChoice();
+
+				String[] input2 = input.toArray(new String[input.size()]);
+				FillBlankSwingEvent fbe = new FillBlankSwingEvent(fbsr, input2, choice);
+				eventMap.put(fbsr.getQuestion(), fbe);
+				fbsr.getTextField().setEnabled(false);
+			}
+
+			if (renderer instanceof SingleChoiceSwingRenderer)
+			{
+				SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
+				Integer input = scsr.getInput();
+				Choice choice = scsr.getQuestion().getChoice();
+				SingleChoiceSwingSelectionEvent sce = new SingleChoiceSwingSelectionEvent(scsr, input,
+						choice);
+				eventMap.put(scsr.getQuestion(), sce);
+				JRadioButton[] radioButtons = scsr.getRadioButtons();
+				for (JRadioButton button : radioButtons)
 				{
-					int result = JOptionPane.showConfirmDialog(null,
-							"Are you sure you want to submit all questions at once?", "Confirm Submission",
-							JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION)
-					{
-						System.out.println("Sending grading event");
-						// GroupGradeEvent event = new GroupGradeEvent();
-						Map<Question, Event> eventMap = new HashMap<>();
-
-						for (SwingRenderer renderer : carousel.rendererList)
-						{
-							if (renderer instanceof FillBlankSwingRenderer)
-							{
-								FillBlankSwingRenderer fbsr = (FillBlankSwingRenderer) renderer;
-								List<String> input = fbsr.getInput();
-								Choice choice = fbsr.getQuestion().getChoice();
-
-								String[] input2 = input.toArray(new String[input.size()]);
-								FillBlankSwingEvent fbe = new FillBlankSwingEvent(fbsr, input2, choice);
-								eventMap.put(fbsr.getQuestion(), fbe);
-								fbsr.getTextField().setEnabled(false);
-							}
-
-							if (renderer instanceof SingleChoiceSwingRenderer)
-							{
-								SingleChoiceSwingRenderer scsr = (SingleChoiceSwingRenderer) renderer;
-								Integer input = scsr.getInput();
-								Choice choice = scsr.getQuestion().getChoice();
-								SingleChoiceSwingSelectionEvent sce = new SingleChoiceSwingSelectionEvent(scsr, input,
-										choice);
-								eventMap.put(scsr.getQuestion(), sce);
-								JRadioButton[] radioButtons = scsr.getRadioButtons();
-								for (JRadioButton button : radioButtons)
-								{
-									button.setEnabled(false);
-								}
-							}
-
-							if (renderer instanceof MultipleChoiceSwingRenderer)
-							{
-								MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
-								Set<Integer> input = mcsr.getInput();
-								Choice choice = mcsr.getQuestion().getChoice();
-
-								MultipleChoiceSwingSelectionEvent mce = new MultipleChoiceSwingSelectionEvent(mcsr,
-										input, choice);
-								eventMap.put(mcsr.getQuestion(), mce);
-								JCheckBox[] checkBoxes = mcsr.getCheckBoxes();
-								for (JCheckBox checkBox : checkBoxes)
-								{
-									checkBox.setEnabled(false);
-								}
-							}
-
-						}
-
-						GroupGradeEvent groupGradeEvent = new GroupGradeEvent(eventMap);
-						fireGroupGraderEvent(groupGradeEvent);
-
-					}
+					button.setEnabled(false);
 				}
-			});
+			}
+
+			if (renderer instanceof MultipleChoiceSwingRenderer)
+			{
+				MultipleChoiceSwingRenderer mcsr = (MultipleChoiceSwingRenderer) renderer;
+				Set<Integer> input = mcsr.getInput();
+				Choice choice = mcsr.getQuestion().getChoice();
+
+				MultipleChoiceSwingSelectionEvent mce = new MultipleChoiceSwingSelectionEvent(mcsr,
+						input, choice);
+				eventMap.put(mcsr.getQuestion(), mce);
+				JCheckBox[] checkBoxes = mcsr.getCheckBoxes();
+				for (JCheckBox checkBox : checkBoxes)
+				{
+					checkBox.setEnabled(false);
+				}
+			}
 
 		}
 
+		GroupGradeEvent groupGradeEvent = new GroupGradeEvent(eventMap);
+		fireGroupGraderEvent(groupGradeEvent);
 	}
-
+	
+	
 	private void setupResultLabel()
 	{
 		this.resultLabel = new JLabel("");
@@ -158,7 +166,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		this.resultLabel.setBackground(Color.white);
 		this.resultLabel.setVerticalTextPosition(SwingConstants.CENTER);
 		this.resultLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		this.resultLabel.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.GRAY));
+		this.resultLabel.setBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY));
 	}
 
 	private void setupAttemptLabel()
@@ -169,9 +177,22 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		this.attemptLabel.setBackground(Color.white);
 		this.attemptLabel.setVerticalTextPosition(SwingConstants.CENTER);
 		this.attemptLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-		this.attemptLabel.setBorder(BorderFactory.createEtchedBorder(Color.BLACK, Color.GRAY));
+		this.attemptLabel.setBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY));
 	}
 
+	private void setupCountDownLabel()
+	{
+		this.countDownLabel = new JLabel("");
+		this.countDownLabel.setPreferredSize(new Dimension(100, 70));
+		this.countDownLabel.setOpaque(true);
+		this.countDownLabel.setBackground(Color.WHITE);
+		this.countDownLabel.setVerticalAlignment(SwingConstants.CENTER);
+		this.countDownLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		this.countDownLabel.setBorder(BorderFactory.createEtchedBorder(Color.GRAY, Color.GRAY));
+		this.countDownLabel.setFont(new Font("SansSerif",Font.BOLD, 24));
+		this.countDownLabel.setForeground(Color.GREEN);
+		
+	}
 	public void fireGroupGraderEvent(GroupGradeEvent event)
 	{
 		if (groupListener != null)
@@ -187,7 +208,7 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 
 		if (!groupSubmit)
 		{
-			List<SwingRenderer> rendererList = carousel.rendererList;
+			List<SwingRenderer> rendererList = carousel.getRendererList();
 			for (SwingRenderer renderer : rendererList)
 			{
 
@@ -239,6 +260,11 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		resultLabel.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 
+	public JLabel getCountDownLabel()
+	{
+		return countDownLabel;
+	}
+	
 	@Override
 	public void gradingActivityCompleted(SingleGradeResultEvent event)
 	{

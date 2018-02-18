@@ -85,12 +85,12 @@ public class FillBlankSwingRenderer extends DefaultSwingRenderer
 		mainPanel = super.render();
 		// questionPanel.setBackground(Color.WHITE);
 
-		mainPanel.questionPanel.setBackground(Color.BLACK);
+		mainPanel.questionPanel.setBackground(Color.WHITE);
 		mainPanel.setLayout(new BorderLayout());
 
 		mainPanel.setOpaque(true);
 		mainPanel.setBackground(Color.WHITE);
-		mainPanel.setForeground(Color.BLACK);
+		mainPanel.setForeground(Color.WHITE);
 
 		mainPanel.add(mainPanel.tabbedPane, BorderLayout.CENTER);
 

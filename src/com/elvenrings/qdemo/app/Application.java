@@ -35,6 +35,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.BevelBorder;
 
+import com.elvenrings.qdemo.activities.ExamActivity;
+import com.elvenrings.qdemo.activities.QuizActivity;
+
 public class Application extends JFrame
 {
 
@@ -53,7 +56,9 @@ public class Application extends JFrame
 	private JRadioButtonMenuItem singleSubmit;
 	private JRadioButtonMenuItem groupSubmit;
 	private AboutDialog aboutDialog;
-
+	private JCheckBoxMenuItem timeAttackItem;
+	private OptionsDialog optionsDialog;
+	
 	private static final long serialVersionUID = 1L;
 	private static ApplicationContext context = ApplicationContext.getInstance();
 
@@ -63,7 +68,7 @@ public class Application extends JFrame
 		try
 		{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			// UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+			//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 			// UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
 			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -81,6 +86,7 @@ public class Application extends JFrame
 
 	private void layoutComponents()
 	{
+		optionsDialog = new OptionsDialog(this);
 		tabbedPane = new JTabbedPane();
 		mainPanel = new JPanel();
 		repoPanel = new JPanel();
@@ -174,12 +180,11 @@ public class Application extends JFrame
 		ApplicationContext.put("endScreen", endScreen);
 		ApplicationContext.put("singleSubmit", singleSubmit);
 		ApplicationContext.put("groupSubmit", groupSubmit);
+		ApplicationContext.put("optionsDialog", optionsDialog);
 	}
 
 	public void layoutMenus()
 	{
-		Loader populator = new Loader(context);
-		xmlFileLoader.addQuestionFileLoadListener(populator);
 
 		JMenuBar menuBar = new JMenuBar();
 		/*--------------------------------*/
@@ -187,12 +192,14 @@ public class Application extends JFrame
 		/*--------------------------------*/
 		JMenu fileMenu = new JMenu("File");
 		fileMenu.setMnemonic(KeyEvent.VK_F);
-
-		JMenu loadMenu = new JMenu("Load");
-		loadMenu.setMnemonic(KeyEvent.VK_L);
+		
+		JMenu settingsMenu = new JMenu("Settings");
+		settingsMenu.setMnemonic(KeyEvent.VK_S);
 
 		JMenu helpMenu = new JMenu("Help");
 		helpMenu.setMnemonic(KeyEvent.VK_H);
+		
+
 
 		/*--------------------------------*/
 		/* Menu Items */
@@ -205,27 +212,30 @@ public class Application extends JFrame
 		JMenuItem exitItem = new JMenuItem("Exit");
 		exitItem.setMnemonic(KeyEvent.VK_X);
 		exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_MASK));
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e)
+			{
+				System.exit(0);
+			}
+		});
 
-		JMenu optionsItem = new JMenu("Options");
 
-		JMenu screenMenu = new JMenu("Screens");
-		welcomeScreen = new JCheckBoxMenuItem("Welcome Screen");
-		welcomeScreen.setSelected(false);
-		endScreen = new JCheckBoxMenuItem("End Screen");
-		endScreen.setSelected(false);
+		
+		JMenuItem loadOptionsItem = new JMenuItem("Load Options");
+		loadOptionsItem.addActionListener(new ActionListener() {
 
-		ButtonGroup submitGroup = new ButtonGroup();
-		JMenu submitMode = new JMenu("Submit Mode");
-		singleSubmit = new JRadioButtonMenuItem("Single Submit");
-		groupSubmit = new JRadioButtonMenuItem("Group Submit");
-		submitGroup.add(singleSubmit);
-		submitGroup.add(groupSubmit);
-		groupSubmit.setSelected(true);
-
-		JMenu timeAttack = new JMenu("Time Attack Options");
-		JCheckBoxMenuItem timeAttackItem = new JCheckBoxMenuItem("Enabled");
-		timeAttackItem.setSelected(false);
-		timeAttack.add(timeAttackItem);
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if (optionsDialog == null)
+				{
+					optionsDialog = new OptionsDialog(Application.this);
+				}
+				optionsDialog.setLocationRelativeTo(Application.this);
+				optionsDialog.setVisible(true);
+			}
+			
+		});
 
 		JMenuItem aboutItem = new JMenuItem("About");
 		aboutItem.setMnemonic(KeyEvent.VK_A);
@@ -247,24 +257,21 @@ public class Application extends JFrame
 		fileMenu.addSeparator();
 		fileMenu.add(exitItem);
 
-		loadMenu.add(optionsItem);
-		optionsItem.add(screenMenu);
-		screenMenu.add(welcomeScreen);
-		screenMenu.add(endScreen);
-		optionsItem.addSeparator();
-		submitMode.add(singleSubmit);
-		submitMode.add(groupSubmit);
-		optionsItem.add(submitMode);
-		optionsItem.addSeparator();
-		optionsItem.add(timeAttack);
 
 		helpMenu.add(aboutItem);
+		
+		settingsMenu.add(loadOptionsItem);
 
 		menuBar.add(fileMenu);
-		menuBar.add(loadMenu);
+		menuBar.add(settingsMenu);
 		menuBar.add(helpMenu);
 
 		setJMenuBar(menuBar);
+		
+		ExamActivity examActivity = new ExamActivity(context);
+		QuizActivity quizActivity = new QuizActivity(context);
+		xmlFileLoader.addQuestionFileLoadListener(examActivity);
+		xmlFileLoader.addQuestionFileLoadListener(quizActivity);
 
 	}
 
