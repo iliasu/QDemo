@@ -1,10 +1,17 @@
 package com.elvenrings.qdemo.activities;
 
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import com.elvenrings.qdemo.activities.states.QuizInitialState;
 import com.elvenrings.qdemo.activities.states.QuizState;
 import com.elvenrings.qdemo.activities.states.QuizStateContext;
 import com.elvenrings.qdemo.app.ApplicationContext;
@@ -28,6 +35,7 @@ public class QuizActivity extends Activity implements QuizStateContext, Question
 	public QuizActivity(ApplicationContext context)
 	{
 		this.context = context;
+		this.mediator = new QuizMediator(false);
 		sequence++;
 	}
 
@@ -43,6 +51,7 @@ public class QuizActivity extends Activity implements QuizStateContext, Question
 		}
 
 		JComboBox<CarouselContainer> combobox = (JComboBox<CarouselContainer>) context.get("carouselList");
+		JMenuItem loadItem = (JMenuItem) context.get("loadItem");
 		JTextArea updateArea = (JTextArea) context.get("updateArea");
 
 		JPanel welcomePanel = new JPanel();
@@ -63,12 +72,50 @@ public class QuizActivity extends Activity implements QuizStateContext, Question
 		{
 			ReadQuestions readQuestions = event.getReadQuestions();
 			String name = "Quiz Mode |" + readQuestions.questionSetName + "[" + sequence++ + "]";
-			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel, true);
+			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel, true, true);
 
 			CarouselControlBox controlBox = new CarouselControlBox(carousel, false);
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
 			SingleGrader singleGrader = new SingleGrader();
 			singleGrader.addSingleGraderResultListener(controlBox);
+
+			JButton startButton = controlBox.getStartButton();
+			JLabel countDownLabel = controlBox.getCountDownLabel();
+			startButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e)
+				{
+					MainTimer timer = new MainTimer(countDownLabel,
+							optionsDialog.getQuizDisplayInterval(), controlBox, QuizActivity.this,
+							optionsDialog.getQuestionTime(), optionsDialog.isWelcomeScreenSet(),
+							optionsDialog.isEndScreenSet(), optionsDialog.getQuizSwitchDelay() * 1000);
+
+					
+					if (optionsDialog.isQuizTimeAttackSet())
+					{
+						mediator.setTimed(true);
+						mediator.setTimer(timer);
+						timer.startTimer();
+					} else
+					{
+						countDownLabel.setForeground(new Color(50, 108, 220));;
+						countDownLabel.setText("UNTIMED");
+						mediator.setTimed(false);
+					}
+					quizState.handle(QuizActivity.this);
+
+				}
+			});
+
+			JButton groupSubmitButton = controlBox.getGroupSubmitButton();
+			mediator.setCarouselMediator(carousel.getMediator());
+			mediator.setGroupSubmitButton(groupSubmitButton);
+			mediator.setStartButton(startButton);
+			mediator.setCombobox(combobox);
+			mediator.setCarousel(carousel);
+			mediator.setLoadItem(loadItem);
+			mediator.init();
+			quizState = new QuizInitialState();
+			quizState.handle(this);
 
 			controlBox.setSingleGraderListener(singleGrader);
 

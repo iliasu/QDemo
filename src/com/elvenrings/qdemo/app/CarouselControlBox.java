@@ -59,6 +59,9 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 	private Tally tally = new Tally();
 	private static Icon correctIcon = new ImageIcon("images/icon_correct.png");
 	private static Icon wrongIcon = new ImageIcon("images/icon_wrong.png");
+	
+	private int current_allowed_attempts;
+	private Map<Question, Boolean> isAnsweredMap = new HashMap<>();
 
 	public CarouselControlBox(DefaultCarousel carousel, boolean groupSubmit)
 	{
@@ -95,6 +98,11 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		this.groupSubmitButton = new JButton("Submit Exam");
 		this.groupSubmitButton.setEnabled(groupSubmit);
 		
+	}
+	
+	public DefaultCarousel getCarousel()
+	{
+		return carousel;
 	}
 
 	public void submitExam()
@@ -262,9 +270,14 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 		return countDownLabel;
 	}
 	
+	public int getCurrentAllowedAttempts()
+	{
+		return current_allowed_attempts;
+	}
 	@Override
 	public void gradingActivityCompleted(SingleGradeResultEvent event)
 	{
+		System.err.println("CarouselControl Grading function Thread: " + Thread.currentThread());
 		Integer attempts = event.getAttempt();
 		Question question = event.getQuestion();
 		boolean correct = event.isCorrect();
@@ -276,7 +289,13 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 
 	private void handle(Integer attempts, boolean correct, SwingRenderer renderer, Integer allowedAttempts)
 	{
-		renderer.getMessageLabel().setText("Attempts Remaining: " + (allowedAttempts - attempts));
+		current_allowed_attempts = allowedAttempts - attempts;
+		current_allowed_attempts = (current_allowed_attempts < 0) ? 0 : current_allowed_attempts;
+		renderer.getMessageLabel().setText("Attempts Remaining: " + (current_allowed_attempts));
+		if(correct || current_allowed_attempts ==0)
+		{
+			isAnsweredMap.put(renderer.getQuestion(), Boolean.TRUE);
+		}
 		JComponent[] inputComponents = renderer.getInputComponent();
 		if (correct)
 		{
@@ -305,9 +324,16 @@ public class CarouselControlBox extends JPanel implements GroupGraderResultListe
 				System.out.println("Wrong after " + attempts + " attempt(s).");
 			} else
 			{
-				System.out.println("Remaining attempts:" + (allowedAttempts - attempts));
+				System.out.println("Remaining attempts:" + (current_allowed_attempts));
 			}
 		}
+	}
+	
+	public Boolean isQuestionAnswered(Question question)
+	{
+		return isAnsweredMap.getOrDefault(question, Boolean.FALSE);
+		
+		
 	}
 
 }

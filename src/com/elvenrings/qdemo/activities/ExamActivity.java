@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
@@ -51,6 +52,7 @@ public class ExamActivity extends Activity implements ExamStateContext, Question
 		}
 
 		JComboBox<CarouselContainer> combobox = (JComboBox<CarouselContainer>) context.get("carouselList");
+		JMenuItem loadItem = (JMenuItem) context.get("loadItem");
 		JTextArea updateArea = (JTextArea) context.get("updateArea");
 
 		JPanel welcomePanel = new JPanel();
@@ -71,7 +73,7 @@ public class ExamActivity extends Activity implements ExamStateContext, Question
 		{
 			ReadQuestions readQuestions = event.getReadQuestions();
 			String name = "Exam Mode<" + readQuestions.questionSetName + "[" + sequence++ + "]>";
-			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel, false);
+			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel, false, false);
 
 			CarouselControlBox controlBox = new CarouselControlBox(carousel, true);
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
@@ -120,6 +122,7 @@ public class ExamActivity extends Activity implements ExamStateContext, Question
 			mediator.setStartButton(startButton);
 			mediator.setCombobox(combobox);
 			mediator.setCarousel(carousel);
+			mediator.setLoadItem(loadItem);
 			mediator.init();
 			examState = new ExamInitialState();
 			examState.handle(this);

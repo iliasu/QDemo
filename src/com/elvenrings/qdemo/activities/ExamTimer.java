@@ -30,7 +30,8 @@ public class ExamTimer extends TimerTask
 		this.examActivity = examActivity;
 		this.taskDuration = taskDuration;
 		this.timer = new Timer("Timer:"+(++sequence));
-		this.countDownLabel.setText(formatDuration(taskDuration));
+		this.countDownLabel.setForeground(new Color(50, 108, 220));
+		this.countDownLabel.setText("UNTIMED");
 	}
 
 	@Override
@@ -52,7 +53,8 @@ public class ExamTimer extends TimerTask
 				{
 					if(taskDuration >= 60)
 					{
-						countDownLabel.setForeground(new Color(20, 128, 75));
+						//countDownLabel.setForeground(new Color(20, 128, 75));
+						countDownLabel.setForeground(new Color(50, 108, 220));
 					}
 					else if( taskDuration < 60 && taskDuration > 20)
 					{
@@ -68,7 +70,7 @@ public class ExamTimer extends TimerTask
 				{
 					timer.cancel();
 					countDownLabel.setForeground(Color.LIGHT_GRAY);
-					countDownLabel.setText("00:00:00");
+					countDownLabel.setText("FINISHED");
 					controlBox.submitExam();
 					examActivity.getExamState().handle(examActivity);
 				}
@@ -96,7 +98,7 @@ public class ExamTimer extends TimerTask
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run()
 			{
-				countDownLabel.setText("00:00:00");
+				countDownLabel.setText("FINISHED");
 				countDownLabel.setForeground(Color.LIGHT_GRAY);
 			}
 		});

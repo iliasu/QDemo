@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,7 +21,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -50,12 +48,9 @@ public class Application extends JFrame
 	private JPanel mainCentralPanel;
 	JComboBox<CarouselContainer> carouselList;
 	private JTextArea updateArea;
-	private JCheckBoxMenuItem welcomeScreen;
-	private JCheckBoxMenuItem endScreen;
-	private JRadioButtonMenuItem singleSubmit;
-	private JRadioButtonMenuItem groupSubmit;
 	private AboutDialog aboutDialog;
 	private OptionsDialog optionsDialog;
+	private JMenuItem loadItem;
 	
 	private static final long serialVersionUID = 1L;
 	private static ApplicationContext context = ApplicationContext.getInstance();
@@ -67,8 +62,10 @@ public class Application extends JFrame
 		{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-			// UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
-			// UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+			//UIManager.setLookAndFeel("com.apple.laf.AquaLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+			
+			
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
 				| UnsupportedLookAndFeelException e)
 		{
@@ -174,11 +171,8 @@ public class Application extends JFrame
 		ApplicationContext.put("carouselList", carouselList);
 		ApplicationContext.put("tabbedPane", tabbedPane);
 		ApplicationContext.put("updateArea", updateArea);
-		ApplicationContext.put("welcomeScreen", welcomeScreen);
-		ApplicationContext.put("endScreen", endScreen);
-		ApplicationContext.put("singleSubmit", singleSubmit);
-		ApplicationContext.put("groupSubmit", groupSubmit);
 		ApplicationContext.put("optionsDialog", optionsDialog);
+		ApplicationContext.put("loadItem", loadItem);
 	}
 
 	public void layoutMenus()
@@ -202,7 +196,7 @@ public class Application extends JFrame
 		/*--------------------------------*/
 		/* Menu Items */
 		/*--------------------------------*/
-		JMenuItem loadItem = new JMenuItem("Load Questions");
+		loadItem = new JMenuItem("Load Questions");
 		loadItem.setMnemonic(KeyEvent.VK_L);
 		loadItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		loadItem.addActionListener(xmlFileLoader);

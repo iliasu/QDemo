@@ -2,6 +2,7 @@ package com.elvenrings.qdemo.activities;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
 
 import com.elvenrings.qdemo.app.CarouselContainer;
 import com.elvenrings.qdemo.app.DefaultCarousel;
@@ -15,6 +16,7 @@ public class ExamMediator
 	private CarouselMediator carouselMediator;
 	private JComboBox<CarouselContainer> combobox;
 	private DefaultCarousel carousel;
+	private JMenuItem loadItem;
 	private ExamTimer timer;
 	private boolean timed; 
 	
@@ -55,6 +57,7 @@ public class ExamMediator
 		this.groupSubmitButton.setEnabled(false);
 		this.combobox.setEnabled(true);
 		this.carouselMediator.disableAll();
+		this.loadItem.setEnabled(true);
 		
 		
 	}
@@ -63,6 +66,7 @@ public class ExamMediator
 		this.startButton.setEnabled(false);
 		this.groupSubmitButton.setEnabled(true);
 		this.combobox.setEnabled(false);
+		this.loadItem.setEnabled(false);
 		try
 		{
 			this.carouselMediator.init();
@@ -89,6 +93,7 @@ public class ExamMediator
 		this.startButton.setEnabled(false);
 		this.groupSubmitButton.setEnabled(false);
 		this.combobox.setEnabled(true);
+		this.loadItem.setEnabled(true);
 		this.carousel.getFirstButton().doClick();
 		if(timed)
 		{
@@ -143,6 +148,18 @@ public class ExamMediator
 	public void setCombobox(JComboBox<CarouselContainer> combobox)
 	{
 		this.combobox = combobox;
+	}
+
+
+	public JMenuItem getLoadItem()
+	{
+		return loadItem;
+	}
+
+
+	public void setLoadItem(JMenuItem loadItem)
+	{
+		this.loadItem = loadItem;
 	}
 
 	

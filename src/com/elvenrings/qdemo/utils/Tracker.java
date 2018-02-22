@@ -30,6 +30,36 @@ public class Tracker
 		this.current = current;
 	}
 
+	public int getCurrent()
+	{
+		return current;
+	}
+	
+	public int getFirst()
+	{
+		return first;
+	}
+	
+	public int getLast()
+	{
+		return last;
+	}
+	
+	public boolean setCurrent(int current)
+	{
+		if(current < first)
+		{
+			return false;
+		}
+		if(current > last)
+		{
+			return false;
+		}
+		
+		this.current = current;
+		return true;
+	}
+	
 	public void moveToLast() throws TrackerException
 	{
 		checkInit();

@@ -53,7 +53,7 @@ public class Loader implements QuestionFileLoadListener
 			ReadQuestions readQuestions = event.getReadQuestions();
 			String name = readQuestions.questionSetName + "|" + event.hashCode();
 			DefaultCarousel carousel = new DefaultCarousel(name, readQuestions, welcomePanel, endPanel,
-					singleSubmit.isSelected());
+					singleSubmit.isSelected(), false);
 
 			CarouselControlBox controlBox = new CarouselControlBox(carousel, groupSubmit.isSelected());
 			CarouselContainer container = new CarouselContainer(carousel, controlBox);
